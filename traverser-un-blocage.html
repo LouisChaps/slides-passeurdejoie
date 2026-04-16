@@ -1,0 +1,2565 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traverser un blocage — Atelier Play&Go</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   BASE
+   =========================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background: #0f0f0f;
+  color: #e8e4df;
+}
+
+/* ===========================================
+   SLIDE BASE
+   =========================================== */
+.slide {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  scroll-snap-align: start;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0f0f0f;
+}
+
+/* ===========================================
+   ORBS — atmospheric depth
+   =========================================== */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.18;
+  pointer-events: none;
+}
+.orb-1 { width: 50vw; height: 50vw; background: #d4a574; top: -15%; right: -10%; animation: drift 8s ease-in-out infinite alternate; }
+.orb-2 { width: 35vw; height: 35vw; background: #e8b4b8; bottom: -10%; left: -5%; animation: drift 10s 2s ease-in-out infinite alternate-reverse; }
+.orb-3 { width: 25vw; height: 25vw; background: #c9b896; top: 40%; left: 30%; animation: drift 12s 1s ease-in-out infinite alternate; }
+.orb-alt1 { background: #c9b896; }
+.orb-alt2 { background: #d4a574; }
+
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(3%, 5%) scale(1.05); }
+}
+
+/* ===========================================
+   ACCENT LINE
+   =========================================== */
+.accent-line {
+  position: absolute;
+  left: clamp(2.5rem, 6vw, 5rem);
+  top: 20%; bottom: 20%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, #d4a574 40%, #d4a574 60%, transparent);
+  opacity: 0;
+  transition: opacity 1.2s 0.8s ease;
+}
+.slide.visible .accent-line { opacity: 0.4; }
+
+/* ===========================================
+   SLIDE NUMBER
+   =========================================== */
+.slide-number {
+  position: absolute;
+  top: clamp(1.5rem, 4vh, 2.5rem);
+  right: clamp(2rem, 5vw, 4rem);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.6rem, 0.85vw, 0.72rem);
+  color: rgba(232,228,223,0.2);
+  letter-spacing: 0.3em;
+}
+
+/* ===========================================
+   REVEAL ANIMATIONS
+   =========================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.slide.visible .reveal:nth-child(1) { transition-delay: 0.1s; }
+.slide.visible .reveal:nth-child(2) { transition-delay: 0.25s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: 0.4s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: 0.55s; }
+.slide.visible .reveal:nth-child(5) { transition-delay: 0.7s; }
+.slide.visible .reveal:nth-child(6) { transition-delay: 0.85s; }
+.slide.visible .reveal:nth-child(7) { transition-delay: 1.0s; }
+.slide.visible .reveal:nth-child(8) { transition-delay: 1.15s; }
+
+.reveal-blur {
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide.visible .reveal-blur { opacity: 1; filter: blur(0); }
+
+/* ===========================================
+   TYPOGRAPHY — COMMON
+   =========================================== */
+.eyebrow {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.6rem, 0.9vw, 0.78rem);
+  font-weight: 300;
+  color: #d4a574;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin-bottom: clamp(1rem, 3vh, 2rem);
+}
+
+.rule {
+  width: clamp(40px, 6vw, 80px);
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d4a574, transparent);
+  margin: clamp(1.5rem, 4vh, 3rem) auto;
+}
+
+.rule-left {
+  width: clamp(40px, 6vw, 80px);
+  height: 1px;
+  background: linear-gradient(to right, #d4a574, transparent);
+  margin: clamp(1rem, 2.5vh, 2rem) 0;
+}
+
+.tag {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.55rem, 0.8vw, 0.68rem);
+  color: rgba(212,165,116,0.6);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 1px solid rgba(212,165,116,0.2);
+  padding: 0.35em 1em;
+  border-radius: 2px;
+}
+
+/* ===========================================
+   SLIDE 1 — TITRE
+   =========================================== */
+.s1-content {
+  text-align: center;
+  z-index: 2;
+  padding: clamp(2rem, 6vw, 5rem);
+  max-width: min(720px, 80vw);
+}
+
+.s1-h1 {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+}
+.s1-h1 em { font-style: italic; color: #d4a574; }
+
+.s1-subtitle {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.8rem, 1.3vw, 1rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.75;
+  max-width: 48ch;
+  margin: 0 auto;
+}
+.s1-subtitle strong { color: #e8e4df; font-weight: 400; }
+
+.s1-tags {
+  display: flex;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  justify-content: center;
+  margin-top: clamp(1.5rem, 4vh, 3rem);
+  flex-wrap: wrap;
+}
+
+/* ===========================================
+   SLIDE 2 — QUOTE (big quote)
+   =========================================== */
+.s2-content {
+  text-align: center;
+  z-index: 2;
+  padding: clamp(3rem, 8vw, 7rem);
+  max-width: min(860px, 88vw);
+}
+
+.s2-quote {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(1.75rem, 4.5vw, 4rem);
+  font-weight: 400;
+  font-style: italic;
+  color: #e8e4df;
+  line-height: 1.3;
+  margin-bottom: clamp(1.5rem, 4vh, 3rem);
+}
+.s2-quote em { font-style: normal; color: #d4a574; }
+
+.s2-note {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.7rem, 1.1vw, 0.88rem);
+  font-weight: 300;
+  color: rgba(154,149,144,0.7);
+  letter-spacing: 0.15em;
+}
+
+.s2-list {
+  text-align: left;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.4rem, 1vh, 0.7rem);
+  margin: 0 auto clamp(1.5rem, 3vh, 2rem);
+  max-width: 42ch;
+}
+
+.s2-list li {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.72rem, 1.1vw, 0.9rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.5;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.s2-list li::before {
+  content: '—';
+  color: rgba(212,165,116,0.4);
+  flex-shrink: 0;
+}
+
+/* ===========================================
+   SLIDE 3 — TWO-COL
+   =========================================== */
+.s3-content {
+  z-index: 2;
+  padding: clamp(2rem, 6vw, 5rem);
+  max-width: min(960px, 90vw);
+  width: 100%;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(3rem, 6vw, 7rem);
+  align-items: center;
+}
+
+.col-left { text-align: left; }
+.col-right { text-align: left; }
+
+.s3-big {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2.5rem, 6vw, 5.5rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1.05;
+  margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
+}
+.s3-big em { font-style: italic; color: #d4a574; }
+
+.s3-h2 {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1.1;
+  margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+}
+.s3-h2 em { font-style: italic; color: #d4a574; }
+
+.s3-body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.75;
+}
+.s3-body strong { color: #e8e4df; font-weight: 400; }
+
+.concept-box {
+  border: 1px solid rgba(212,165,116,0.2);
+  border-radius: 4px;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: rgba(212,165,116,0.04);
+  margin-top: clamp(1rem, 2.5vh, 2rem);
+}
+
+.concept-label {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.72rem, 1vw, 0.85rem);
+  color: rgba(212,165,116,0.5);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.concept-text {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(1.15rem, 2.2vw, 1.8rem);
+  font-style: italic;
+  color: #e8e4df;
+  line-height: 1.4;
+}
+
+/* ===========================================
+   SLIDE 4 — THREE CARDS
+   =========================================== */
+.s4-content {
+  z-index: 2;
+  padding: clamp(2rem, 5vw, 4rem);
+  max-width: min(1000px, 92vw);
+  width: 100%;
+  text-align: center;
+}
+
+.s4-header {
+  margin-bottom: clamp(1.5rem, 3.5vh, 3rem);
+}
+
+.s4-h2 {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1.1;
+}
+.s4-h2 em { font-style: italic; color: #d4a574; }
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.cards-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.card {
+  border: 1px solid rgba(212,165,116,0.15);
+  border-radius: 4px;
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+  text-align: left;
+  background: rgba(212,165,116,0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-icon {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  font-style: italic;
+  color: #d4a574;
+  margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+}
+
+.card-title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.78rem, 1.1vw, 0.92rem);
+  font-weight: 400;
+  color: #e8e4df;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: clamp(0.35rem, 1vh, 0.6rem);
+}
+
+.card-body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.65;
+  flex: 1;
+}
+
+.card-examples {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.58rem, 0.85vw, 0.72rem);
+  font-weight: 300;
+  color: rgba(212,165,116,0.5);
+  line-height: 1.6;
+  margin-top: clamp(0.5rem, 1.5vh, 0.85rem);
+  font-style: italic;
+}
+
+/* ===========================================
+   SLIDE 5 — DISSONANCE (left-aligned list)
+   =========================================== */
+.s5-content {
+  z-index: 2;
+  padding: clamp(2rem, 6vw, 5rem);
+  max-width: min(780px, 88vw);
+  width: 100%;
+}
+
+.s5-h2 {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1.1;
+  margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+}
+.s5-h2 em { font-style: italic; color: #d4a574; }
+
+.s5-intro {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.7;
+  max-width: 52ch;
+  margin-bottom: clamp(1.5rem, 3.5vh, 2.5rem);
+}
+
+.dissonance-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 2vh, 1.25rem);
+}
+
+.dissonance-item {
+  display: flex;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  align-items: flex-start;
+}
+
+.dissonance-marker {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+  font-style: italic;
+  color: rgba(212,165,116,0.5);
+  flex-shrink: 0;
+  line-height: 1.2;
+  min-width: 1.2rem;
+}
+
+.dissonance-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.dissonance-title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1.3;
+}
+
+.dissonance-desc {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.6;
+}
+
+/* ===========================================
+   SLIDE 6 — STEPS
+   =========================================== */
+.s6-content {
+  z-index: 2;
+  padding: clamp(2rem, 6vw, 5rem);
+  max-width: min(820px, 88vw);
+  width: 100%;
+}
+
+.s6-h2 {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1.1;
+}
+.s6-h2 em { font-style: italic; color: #d4a574; }
+
+.steps {
+  list-style: none;
+  margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.85rem, 2.2vh, 1.4rem);
+}
+
+.step {
+  display: grid;
+  grid-template-columns: clamp(1.5rem, 3vw, 2.5rem) 1fr;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  align-items: flex-start;
+}
+
+.step-num {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  font-style: italic;
+  color: #d4a574;
+  line-height: 1;
+  padding-top: 0.1em;
+}
+
+.step-body { display: flex; flex-direction: column; gap: 0.2rem; }
+
+.step-title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1.3;
+}
+
+.step-desc {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.6;
+}
+
+/* ===========================================
+   SLIDE 7 — IMMERSIVE
+   =========================================== */
+.s7-content {
+  text-align: center;
+  z-index: 2;
+  padding: clamp(3rem, 8vw, 7rem);
+  max-width: min(780px, 86vw);
+}
+
+.s7-exercise-label {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.55rem, 0.85vw, 0.72rem);
+  font-weight: 300;
+  color: rgba(212,165,116,0.5);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin-bottom: clamp(1.5rem, 4vh, 3rem);
+}
+
+.s7-instruction {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(1.5rem, 3.5vw, 3rem);
+  font-weight: 400;
+  font-style: italic;
+  color: #e8e4df;
+  line-height: 1.45;
+  max-width: 28ch;
+  margin: 0 auto;
+}
+.s7-instruction em { font-style: normal; color: #d4a574; }
+
+.s7-divider {
+  width: 1px;
+  height: clamp(2rem, 5vh, 4rem);
+  background: linear-gradient(to bottom, #d4a574, transparent);
+  margin: clamp(1.5rem, 4vh, 3rem) auto;
+}
+
+.s7-sub {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.7rem, 1.1vw, 0.88rem);
+  font-weight: 300;
+  color: rgba(154,149,144,0.7);
+  line-height: 1.7;
+  max-width: 44ch;
+  margin: 0 auto;
+}
+
+/* ===========================================
+   SLIDE 8 — SIGNAL GRID
+   =========================================== */
+.s8-content {
+  z-index: 2;
+  padding: clamp(2rem, 6vw, 5rem);
+  max-width: min(900px, 90vw);
+  width: 100%;
+}
+
+.s8-header {
+  text-align: center;
+  margin-bottom: clamp(1.5rem, 3.5vh, 2.5rem);
+}
+
+.s8-h2 {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1.1;
+}
+.s8-h2 em { font-style: italic; color: #d4a574; }
+
+.signal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+.signal-col-title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.58rem, 0.88vw, 0.72rem);
+  font-weight: 300;
+  color: rgba(212,165,116,0.6);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: clamp(0.75rem, 2vh, 1.25rem);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(212,165,116,0.15);
+}
+
+.signal-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1.5vh, 0.85rem);
+}
+
+.signal-item {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.55;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.signal-item::before {
+  content: '—';
+  color: rgba(212,165,116,0.4);
+  flex-shrink: 0;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.75em;
+  margin-top: 0.15em;
+}
+
+.signal-item strong { color: #e8e4df; font-weight: 400; }
+
+/* ===========================================
+   SLIDE 9 — TWO-COL MOMENT LIST
+   =========================================== */
+.s9-content {
+  z-index: 2;
+  padding: clamp(2rem, 6vw, 5rem);
+  max-width: min(860px, 90vw);
+  width: 100%;
+}
+
+.s9-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(3rem, 6vw, 6rem);
+  align-items: start;
+}
+
+.s9-h2 {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1.1;
+  margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+}
+.s9-h2 em { font-style: italic; color: #d4a574; }
+
+.s9-body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.75rem, 1.2vw, 0.92rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.75;
+}
+.s9-body strong { color: #e8e4df; font-weight: 400; }
+
+.moment-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.85rem, 2.2vh, 1.4rem);
+}
+
+.moment-item { display: flex; flex-direction: column; gap: 0.2rem; }
+
+.moment-time {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.55rem, 0.82vw, 0.68rem);
+  font-weight: 300;
+  color: rgba(212,165,116,0.55);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+.moment-action {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+  font-style: italic;
+  color: #e8e4df;
+  line-height: 1.3;
+}
+
+.moment-desc {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.62rem, 0.95vw, 0.78rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.6;
+}
+
+.moment-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(212,165,116,0.1);
+  margin-top: clamp(0.85rem, 2.2vh, 1.4rem);
+}
+
+/* ===========================================
+   SLIDE 10 — CONCLUSION
+   =========================================== */
+.s10-content {
+  text-align: center;
+  z-index: 2;
+  padding: clamp(3rem, 8vw, 7rem);
+  max-width: min(760px, 85vw);
+}
+
+.s10-h1 {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2.5rem, 6.5vw, 6rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+}
+.s10-h1 em { font-style: italic; color: #d4a574; }
+
+.s10-closing {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.8rem, 1.3vw, 1rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.8;
+  max-width: 46ch;
+  margin: 0 auto;
+}
+
+.s10-tags {
+  display: flex;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  justify-content: center;
+  margin-top: clamp(1.5rem, 4vh, 3rem);
+  flex-wrap: wrap;
+}
+
+/* ===========================================
+   CENTERED SLIDE (for cycle diagram, road)
+   =========================================== */
+.centered-content {
+  text-align: center;
+  z-index: 2;
+  padding: clamp(2rem, 6vw, 5rem);
+  max-width: min(820px, 88vw);
+  width: 100%;
+}
+
+.centered-h2 {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 400;
+  color: #e8e4df;
+  line-height: 1.1;
+  margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+}
+.centered-h2 em { font-style: italic; color: #d4a574; }
+
+.centered-body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.75rem, 1.2vw, 0.95rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.75;
+  max-width: 52ch;
+  margin: 0 auto;
+}
+.centered-body strong { color: #e8e4df; font-weight: 400; }
+.centered-body em { color: #d4a574; font-style: italic; }
+
+/* ===========================================
+   SVG ILLUSTRATIONS
+   =========================================== */
+.svg-illustration {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: clamp(1rem, 2vh, 2rem) auto;
+}
+
+.svg-illustration svg {
+  width: 100%;
+  height: auto;
+  max-width: 260px;
+}
+
+/* ===========================================
+   PROGRESS BAR
+   =========================================== */
+.progress-bar {
+  position: fixed;
+  bottom: 0; left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(to right, #d4a574, #e8b4b8);
+  z-index: 100;
+  transition: width 0.3s ease;
+  pointer-events: none;
+}
+
+/* ===========================================
+   NAV DOTS
+   =========================================== */
+.nav-dots {
+  position: fixed;
+  right: clamp(1rem, 2.5vw, 2rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
+}
+
+.nav-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(212,165,116,0.25);
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  border: none;
+  padding: 0;
+}
+.nav-dot.active {
+  background: #d4a574;
+  transform: scale(1.6);
+}
+.nav-dot:hover { background: rgba(212,165,116,0.6); }
+
+/* ===========================================
+   INLINE EDITING
+   =========================================== */
+.edit-hotzone {
+  position: fixed;
+  top: 0; left: 0;
+  width: 80px; height: 80px;
+  z-index: 10000;
+}
+
+.edit-toggle {
+  position: fixed;
+  top: 16px; left: 16px;
+  background: rgba(212,165,116,0.9);
+  color: #0f0f0f;
+  border: none;
+  border-radius: 3px;
+  padding: 6px 14px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  z-index: 10001;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.edit-toggle.show,
+.edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle.active { background: rgba(232,180,184,0.9); }
+
+.edit-save {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: rgba(212,165,116,0.9);
+  color: #0f0f0f;
+  border: none;
+  border-radius: 3px;
+  padding: 8px 18px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  z-index: 10001;
+  display: none;
+}
+
+body.editing .edit-save { display: block; }
+
+body.editing [contenteditable] {
+  outline: 1px dashed rgba(212,165,116,0.35);
+  outline-offset: 3px;
+  cursor: text;
+  border-radius: 2px;
+  min-width: 1em;
+}
+body.editing [contenteditable]:focus {
+  outline: 1px solid rgba(212,165,116,0.75);
+  background: rgba(212,165,116,0.04);
+}
+
+/* ===========================================
+   CARD COLOR ACCENTS
+   =========================================== */
+.card-green { border-color: rgba(120,180,120,0.3); background: rgba(120,180,120,0.04); }
+.card-green .card-icon { color: #8bc08b; }
+.card-orange { border-color: rgba(212,165,116,0.3); background: rgba(212,165,116,0.04); }
+.card-orange .card-icon { color: #d4a574; }
+.card-red { border-color: rgba(232,180,184,0.3); background: rgba(232,180,184,0.04); }
+.card-red .card-icon { color: #e8b4b8; }
+
+/* ===========================================
+   SIGNAL GRID 3-COL + PROTOCOL BOX
+   =========================================== */
+.signal-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+  margin-bottom: clamp(1.5rem, 3vh, 2.5rem);
+}
+
+.protocol-box {
+  border: 1px solid rgba(212,165,116,0.2);
+  border-radius: 4px;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: rgba(212,165,116,0.04);
+  margin-top: clamp(1rem, 2vh, 1.5rem);
+}
+
+.protocol-title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.58rem, 0.88vw, 0.72rem);
+  font-weight: 300;
+  color: rgba(212,165,116,0.6);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: clamp(0.75rem, 1.5vh, 1rem);
+}
+
+.protocol-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.protocol-steps li {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(0.68rem, 1vw, 0.85rem);
+  font-weight: 300;
+  color: #9a9590;
+  line-height: 1.55;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.protocol-steps li strong { color: #e8e4df; font-weight: 400; }
+
+.protocol-steps .pnum {
+  color: #d4a574;
+  font-family: 'Cormorant', serif;
+  font-style: italic;
+  flex-shrink: 0;
+}
+
+/* ===========================================
+   RESPONSIVE
+   =========================================== */
+@media (max-width: 680px) {
+  .two-col, .signal-grid, .s9-two-col, .signal-grid-3 { grid-template-columns: 1fr; }
+  .cards-grid { grid-template-columns: 1fr; gap: 0.6rem; }
+  .cards-grid-4 { grid-template-columns: 1fr; gap: 0.6rem; }
+  .card { padding: 0.85rem; }
+}
+
+@media (max-height: 650px) {
+  .cards-grid { gap: 0.5rem; }
+  .cards-grid-4 { gap: 0.5rem; }
+  .steps { gap: 0.6rem; }
+  .dissonance-list { gap: 0.6rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- Chrome UI -->
+<div class="progress-bar" id="progressBar"></div>
+<nav class="nav-dots" id="navDots" aria-label="Navigation slides"></nav>
+<div class="edit-hotzone" id="editHotzone" role="button" aria-label="Zone d'activation édition" tabindex="0"></div>
+<button class="edit-toggle" id="editToggle" aria-label="Activer le mode édition">Éditer</button>
+<button class="edit-save" id="editSave" aria-label="Exporter la présentation">Exporter HTML</button>
+
+<!-- ============================================
+     SLIDE 01 — TITRE
+     ============================================ -->
+<section class="slide" id="slide-1" aria-label="Slide 1 sur 20">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="accent-line"></div>
+  <div class="slide-number">01 / 20</div>
+
+  <div class="s1-content">
+    <div class="eyebrow reveal" contenteditable="false">Atelier Play&Go · Pratique Guidée</div>
+    <h1 class="s1-h1 reveal">Traverser un<br><em contenteditable="false">blocage</em></h1>
+    <div class="rule reveal"></div>
+    <p class="s1-subtitle reveal">Comprendre ce qui te <strong>paralyse</strong> quand tu veux agir dans ton activité. Libérer l'énergie bloquée dans ton corps. Et repartir avec <strong>une action concrète</strong> — dans les 48 heures.</p>
+    <div class="s1-tags reveal">
+      <span class="tag" contenteditable="false">Neurosciences</span>
+      <span class="tag" contenteditable="false">Corps</span>
+      <span class="tag" contenteditable="false">Parts Intérieures</span>
+      <span class="tag" contenteditable="false">Action</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 02 — LEUR QUOTIDIEN
+     ============================================ -->
+<section class="slide" id="slide-2" aria-label="Slide 2 sur 20">
+  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-5%;"></div>
+  <div class="orb orb-2" style="background:#c9b896; bottom:-10%; left:-5%;"></div>
+  <div class="accent-line"></div>
+  <div class="slide-number">02 / 20</div>
+
+  <div class="s5-content">
+    <div class="eyebrow reveal" contenteditable="false">Le Constat</div>
+    <h2 class="s5-h2 reveal" contenteditable="false">Ton <em>quotidien</em></h2>
+    <p class="s5-intro reveal" contenteditable="false">Tu es coach, thérapeute, accompagnant. Tu transformes les gens quand ils sont devant toi. Mais quand il s'agit de ton activité — là, ça coince.</p>
+    <ul class="dissonance-list">
+      <li class="dissonance-item reveal">
+        <span class="dissonance-marker" contenteditable="false">01</span>
+        <div class="dissonance-text">
+          <span class="dissonance-title" contenteditable="false">Le post fantôme</span>
+          <span class="dissonance-desc" contenteditable="false">Tu repousses depuis 3 semaines ce post que tu sais devoir publier.</span>
+        </div>
+      </li>
+      <li class="dissonance-item reveal">
+        <span class="dissonance-marker" contenteditable="false">02</span>
+        <div class="dissonance-text">
+          <span class="dissonance-title" contenteditable="false">L'offre muette</span>
+          <span class="dissonance-desc" contenteditable="false">Tu as une offre claire, mais tu n'oses pas la proposer à quelqu'un qui en a besoin.</span>
+        </div>
+      </li>
+      <li class="dissonance-item reveal">
+        <span class="dissonance-marker" contenteditable="false">03</span>
+        <div class="dissonance-text">
+          <span class="dissonance-title" contenteditable="false">L'allergie à la vente</span>
+          <span class="dissonance-desc" contenteditable="false">Tu évites les appels de vente parce que « vendre, c'est pas toi ».</span>
+        </div>
+      </li>
+      <li class="dissonance-item reveal">
+        <span class="dissonance-marker" contenteditable="false">04</span>
+        <div class="dissonance-text">
+          <span class="dissonance-title" contenteditable="false">La productivité stérile</span>
+          <span class="dissonance-desc" contenteditable="false">Tu passes tes journées à préparer, peaufiner, réorganiser — mais jamais à vendre.</span>
+        </div>
+      </li>
+      <li class="dissonance-item reveal">
+        <span class="dissonance-marker" contenteditable="false">05</span>
+        <div class="dissonance-text">
+          <span class="dissonance-title" contenteditable="false">Le « demain, j'avance »</span>
+          <span class="dissonance-desc" contenteditable="false">Tu te couches le soir en te disant « demain, j'avance » — et demain ressemble à aujourd'hui. Et le pire : tu te juges.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 03 — LE MENSONGE
+     ============================================ -->
+<section class="slide" id="slide-3" aria-label="Slide 3 sur 20">
+  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:-5%; opacity:0.13;"></div>
+  <div class="orb orb-3" style="background:#c9b896; top:35%; left:25%;"></div>
+  <div class="slide-number">03 / 20</div>
+
+  <div class="s2-content">
+    <div class="eyebrow reveal" contenteditable="false">Le Mensonge</div>
+    <p class="s2-quote reveal" contenteditable="false">
+      On t'a dit que la solution, c'est <em>plus</em>.
+    </p>
+    <ul class="s2-list reveal">
+      <li contenteditable="false">Plus de motivation</li>
+      <li contenteditable="false">Plus de discipline</li>
+      <li contenteditable="false">Un meilleur plan d'action</li>
+      <li contenteditable="false">Une to-do list plus précise</li>
+      <li contenteditable="false">« Il suffit de... »</li>
+    </ul>
+    <div class="rule reveal"></div>
+    <p class="s2-note reveal" contenteditable="false">C'est comme essayer de démarrer une voiture avec une batterie à plat en appuyant plus fort sur l'accélérateur. Le problème n'est pas là.</p>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 04 — CE QU'ON VA FAIRE
+     ============================================ -->
+<section class="slide" id="slide-4" aria-label="Slide 4 sur 20">
+  <div class="orb orb-1" style="background:#d4a574; top:-10%; right:-5%;"></div>
+  <div class="orb orb-3" style="background:#c9b896; bottom:20%; left:5%; opacity:0.14;"></div>
+  <div class="slide-number">04 / 20</div>
+
+  <div class="s6-content">
+    <div class="eyebrow reveal" contenteditable="false">Le Programme</div>
+    <h2 class="s6-h2 reveal" contenteditable="false">Ce qu'on va faire <em>aujourd'hui</em></h2>
+    <ol class="steps">
+      <li class="step reveal">
+        <span class="step-num" contenteditable="false">1</span>
+        <div class="step-body">
+          <span class="step-title" contenteditable="false">Comprendre</span>
+          <span class="step-desc" contenteditable="false">Ce qui se passe réellement dans ton cerveau et dans ton corps quand tu bloques. (10 min)</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num" contenteditable="false">2</span>
+        <div class="step-body">
+          <span class="step-title" contenteditable="false">Traverser</span>
+          <span class="step-desc" contenteditable="false">On fait l'expérience ensemble, en live, avec une pratique guidée. (25 min)</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num" contenteditable="false">3</span>
+        <div class="step-body">
+          <span class="step-title" contenteditable="false">Repartir</span>
+          <span class="step-desc" contenteditable="false">Avec une action concrète et un outil que tu pourras réutiliser seul. (5 min)</span>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 05 — LA MAISON À TROIS ÉTAGES
+     ============================================ -->
+<section class="slide" id="slide-5" aria-label="Slide 5 sur 20">
+  <div class="orb orb-1" style="background:#c9b896; top:10%; right:-15%; width:40vw; height:40vw;"></div>
+  <div class="orb orb-2" style="background:#e8b4b8; bottom:-10%; left:-5%;"></div>
+  <div class="accent-line"></div>
+  <div class="slide-number">05 / 20</div>
+
+  <div class="s3-content">
+    <div class="two-col">
+      <div class="col-left">
+        <div class="eyebrow reveal" contenteditable="false">Neurosciences</div>
+        <h2 class="s3-h2 reveal" contenteditable="false">La maison à <em>trois étages</em></h2>
+        <div class="rule-left reveal"></div>
+        <!-- SVG: House with 3 floors -->
+        <div class="svg-illustration reveal">
+          <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Roof -->
+            <path d="M110 20 L30 80 L190 80 Z" stroke="#d4a574" stroke-width="1.5" fill="rgba(232,228,223,0.04)"/>
+            <!-- Top floor (Stratège) -->
+            <rect x="40" y="80" width="140" height="55" stroke="#d4a574" stroke-width="1" fill="rgba(232,228,223,0.06)"/>
+            <text x="110" y="104" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#d4a574" letter-spacing="0.1em">STRATÈGE</text>
+            <text x="110" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="rgba(212,165,116,0.55)">cortex préfrontal</text>
+            <!-- Middle floor (Radar) -->
+            <rect x="40" y="135" width="140" height="55" stroke="#e8b4b8" stroke-width="1" fill="rgba(232,228,223,0.06)"/>
+            <text x="110" y="159" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#e8b4b8" letter-spacing="0.1em">RADAR</text>
+            <text x="110" y="175" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="rgba(232,180,184,0.55)">cerveau émotionnel</text>
+            <!-- Ground floor (Gardien) -->
+            <rect x="40" y="190" width="140" height="55" stroke="#c9b896" stroke-width="1" fill="rgba(232,228,223,0.06)"/>
+            <text x="110" y="214" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#c9b896" letter-spacing="0.1em">GARDIEN</text>
+            <text x="110" y="230" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="rgba(201,184,150,0.55)">cerveau reptilien</text>
+            <!-- Staircase lines -->
+            <line x1="70" y1="245" x2="70" y2="80" stroke="rgba(232,228,223,0.15)" stroke-width="1" stroke-dasharray="4 3"/>
+            <!-- Foundation -->
+            <line x1="30" y1="245" x2="190" y2="245" stroke="#d4a574" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="concept-box reveal">
+          <div class="concept-label" contenteditable="false">Rez-de-chaussée — Le Gardien</div>
+          <p class="concept-text" contenteditable="false">Survie. Réflexes. Il ne pense pas : il réagit. Vite. Fort.</p>
+        </div>
+        <div class="concept-box reveal" style="margin-top: clamp(0.75rem, 2vh, 1.25rem);">
+          <div class="concept-label" contenteditable="false">Premier étage — Le Radar</div>
+          <p class="concept-text" contenteditable="false">Il scanne : « Suis-je en sécurité ? » Il compare tout à des souvenirs passés et déclenche des émotions.</p>
+        </div>
+        <div class="concept-box reveal" style="margin-top: clamp(0.75rem, 2vh, 1.25rem);">
+          <div class="concept-label" contenteditable="false">Deuxième étage — Le Stratège</div>
+          <p class="concept-text" contenteditable="false">Raison, décision, planification. C'est lui qui fait tes plans d'action, tes offres, tes messages de vente.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 06 — QUAND LE GARDIEN COUPE L'ESCALIER
+     ============================================ -->
+<section class="slide" id="slide-6" aria-label="Slide 6 sur 20">
+  <div class="orb orb-1" style="background:#e8b4b8; top:-5%; right:5%; opacity:0.13;"></div>
+  <div class="orb orb-2" style="background:#d4a574; bottom:-10%; left:-5%;"></div>
+  <div class="accent-line"></div>
+  <div class="slide-number">06 / 20</div>
+
+  <div class="s3-content">
+    <div class="two-col">
+      <div class="col-left">
+        <div class="eyebrow reveal" contenteditable="false">La Déconnexion</div>
+        <h2 class="s3-h2 reveal" contenteditable="false">Quand le gardien <em>coupe l'escalier</em></h2>
+        <div class="rule-left reveal"></div>
+        <!-- SVG: Disconnected house -->
+        <div class="svg-illustration reveal">
+          <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Roof — faded -->
+            <path d="M110 20 L30 80 L190 80 Z" stroke="rgba(212,165,116,0.25)" stroke-width="1.5" fill="rgba(232,228,223,0.02)" stroke-dasharray="4 4"/>
+            <!-- Top floor (Stratège) — faded, shifted up -->
+            <rect x="40" y="70" width="140" height="55" stroke="rgba(212,165,116,0.2)" stroke-width="1" fill="rgba(232,228,223,0.02)" stroke-dasharray="4 4"/>
+            <text x="110" y="102" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="rgba(212,165,116,0.25)" letter-spacing="0.1em">STRATÈGE</text>
+            <text x="110" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-size="7" fill="rgba(232,228,223,0.2)">HORS LIGNE</text>
+            <!-- Cut in staircase — zigzag break -->
+            <line x1="55" y1="130" x2="85" y2="130" stroke="#e8b4b8" stroke-width="2"/>
+            <path d="M60 126 L65 134 L70 126 L75 134 L80 126" stroke="#e8b4b8" stroke-width="1.5" fill="none"/>
+            <!-- Middle floor (Radar) — alert -->
+            <rect x="40" y="145" width="140" height="55" stroke="#e8b4b8" stroke-width="1.5" fill="rgba(232,180,184,0.06)"/>
+            <text x="110" y="177" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#e8b4b8" letter-spacing="0.1em">RADAR</text>
+            <!-- Alert signals -->
+            <circle cx="165" cy="160" r="4" fill="#e8b4b8" opacity="0.4"/>
+            <circle cx="175" cy="155" r="3" fill="#e8b4b8" opacity="0.3"/>
+            <circle cx="170" cy="170" r="2.5" fill="#e8b4b8" opacity="0.25"/>
+            <!-- Ground floor (Gardien) — active -->
+            <rect x="40" y="200" width="140" height="55" stroke="#c9b896" stroke-width="1.5" fill="rgba(201,184,150,0.08)"/>
+            <text x="110" y="232" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#c9b896" letter-spacing="0.1em">GARDIEN</text>
+            <!-- Staircase — broken -->
+            <line x1="70" y1="255" x2="70" y2="200" stroke="rgba(232,228,223,0.15)" stroke-width="1" stroke-dasharray="4 3"/>
+            <line x1="70" y1="145" x2="70" y2="200" stroke="rgba(232,228,223,0.15)" stroke-width="1" stroke-dasharray="4 3"/>
+            <!-- Foundation -->
+            <line x1="30" y1="255" x2="190" y2="255" stroke="#c9b896" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+      <div class="col-right">
+        <p class="s3-body reveal" contenteditable="false">
+          Quand le radar détecte un signal de danger — même un faux signal — il alerte le gardien. Le gardien réagit en une fraction de seconde : <strong>il coupe l'escalier vers le stratège.</strong>
+        </p>
+        <div class="concept-box reveal" style="margin-top: clamp(1rem, 2vh, 1.5rem);">
+          <div class="concept-label" contenteditable="false">Concrètement</div>
+          <p class="concept-text" contenteditable="false">Impossible de réfléchir clairement. Impossible de prendre une décision. Impossible de « juste le faire ».</p>
+        </div>
+        <p class="s3-body reveal" style="margin-top: clamp(1rem, 2vh, 1.5rem);" contenteditable="false">
+          Pas parce que tu manques de volonté. Parce que <strong>la zone de ton cerveau qui gère la volonté est hors ligne.</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 07 — LE FEU TRICOLORE INTÉRIEUR
+     ============================================ -->
+<section class="slide" id="slide-7" aria-label="Slide 7 sur 20">
+  <div class="orb orb-1" style="background:#d4a574; top:-10%; left:-10%; right:auto;"></div>
+  <div class="orb orb-3" style="background:#e8b4b8; bottom:5%; right:10%;"></div>
+  <div class="slide-number">07 / 20</div>
+
+  <div class="s4-content">
+    <div class="s4-header">
+      <div class="eyebrow reveal" contenteditable="false">Stephen Porges · Théorie Polyvagale</div>
+      <h2 class="s4-h2 reveal" contenteditable="false">Le feu tricolore <em>intérieur</em></h2>
+      <!-- SVG: Traffic light -->
+      <div class="svg-illustration reveal" style="margin: clamp(0.5rem, 1vh, 1rem) auto;">
+        <svg viewBox="0 0 60 140" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width:50px;">
+          <rect x="10" y="5" width="40" height="120" rx="8" stroke="rgba(232,228,223,0.2)" stroke-width="1" fill="rgba(232,228,223,0.03)"/>
+          <!-- Green -->
+          <circle cx="30" cy="30" r="12" stroke="#8bc08b" stroke-width="1.5" fill="rgba(120,180,120,0.15)"/>
+          <circle cx="30" cy="30" r="5" fill="#8bc08b" opacity="0.6"/>
+          <!-- Orange -->
+          <circle cx="30" cy="65" r="12" stroke="#d4a574" stroke-width="1.5" fill="rgba(212,165,116,0.15)"/>
+          <circle cx="30" cy="65" r="5" fill="#d4a574" opacity="0.6"/>
+          <!-- Red -->
+          <circle cx="30" cy="100" r="12" stroke="#e8b4b8" stroke-width="1.5" fill="rgba(232,180,184,0.15)"/>
+          <circle cx="30" cy="100" r="5" fill="#e8b4b8" opacity="0.6"/>
+          <!-- Post -->
+          <line x1="30" y1="125" x2="30" y2="138" stroke="rgba(232,228,223,0.2)" stroke-width="1.5"/>
+        </svg>
+      </div>
+    </div>
+    <div class="cards-grid">
+      <div class="card card-green reveal">
+        <span class="card-icon" contenteditable="false">Vert</span>
+        <div class="card-title" contenteditable="false">Sécurité</div>
+        <p class="card-body" contenteditable="false">Détendu, connecté, créatif. Voix posée, yeux vivants. C'est l'état où tu fais ton meilleur travail — celui où tu accompagnes tes clients avec brio.</p>
+      </div>
+      <div class="card card-orange reveal">
+        <span class="card-icon" contenteditable="false">Orange</span>
+        <div class="card-title" contenteditable="false">Alerte</div>
+        <p class="card-body" contenteditable="false">Cœur qui accélère, souffle court, tension. Mode « se battre ou fuir ». Tu peux encore agir, mais c'est forcé, crispé, épuisant.</p>
+      </div>
+      <div class="card card-red reveal">
+        <span class="card-icon" contenteditable="false">Rouge</span>
+        <div class="card-title" contenteditable="false">Freeze</div>
+        <p class="card-body" contenteditable="false">Ton corps s'éteint. Regard vide, énergie à zéro. Ce n'est ni de la paresse ni de la démotivation — c'est le mode « faire le mort ».</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 08 — POURQUOI ÇA SE DÉCLENCHE
+     ============================================ -->
+<section class="slide" id="slide-8" aria-label="Slide 8 sur 20">
+  <div class="orb orb-1" style="background:#e8b4b8; top:-5%; right:5%; opacity:0.13;"></div>
+  <div class="orb orb-2" style="background:#c9b896; bottom:-10%; left:-5%;"></div>
+  <div class="accent-line"></div>
+  <div class="slide-number">08 / 20</div>
+
+  <div class="s5-content">
+    <div class="eyebrow reveal" contenteditable="false">Les Déclencheurs</div>
+    <h2 class="s5-h2 reveal" contenteditable="false">Pourquoi ça se déclenche <em>sans raison</em></h2>
+    <p class="s5-intro reveal" contenteditable="false">Ton système nerveux scanne ton environnement environ 200 fois par seconde. Sans que tu en sois conscient. Et il compare tout à des souvenirs passés.</p>
+    <ul class="dissonance-list">
+      <li class="dissonance-item reveal">
+        <span class="dissonance-marker" contenteditable="false">01</span>
+        <div class="dissonance-text">
+          <span class="dissonance-title" contenteditable="false">Publier un post</span>
+          <span class="dissonance-desc" contenteditable="false">Pour ton système nerveux, ça peut ressembler à « s'exposer au jugement de tout le monde ». S'il a stocké un souvenir d'humiliation — il tire le frein à main.</span>
+        </div>
+      </li>
+      <li class="dissonance-item reveal">
+        <span class="dissonance-marker" contenteditable="false">02</span>
+        <div class="dissonance-text">
+          <span class="dissonance-title" contenteditable="false">Proposer ton offre</span>
+          <span class="dissonance-desc" contenteditable="false">Ça peut ressembler à « risquer le rejet ». Et ton système nerveux préfère l'immobilité au rejet.</span>
+        </div>
+      </li>
+      <li class="dissonance-item reveal">
+        <span class="dissonance-marker" contenteditable="false">03</span>
+        <div class="dissonance-text">
+          <span class="dissonance-title" contenteditable="false">Augmenter tes prix</span>
+          <span class="dissonance-desc" contenteditable="false">Ça peut réactiver une croyance profonde : « tu ne vaux pas autant ». Le danger n'est pas réel — mais la réaction, elle, est réelle.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 8b — PONT : DU CERVEAU AU CORPS
+     ============================================ -->
+<section class="slide" id="slide-8b" aria-label="Pont cerveau-corps">
+  <div class="orb orb-1" style="background:#c9b896; top:-15%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#e8b4b8; bottom:-10%; left:5%; opacity:0.12;"></div>
+  <div class="slide-number">8b</div>
+
+  <div class="s2-content">
+    <div class="eyebrow reveal" contenteditable="false">Cognitif → Somatique</div>
+    <p class="s2-quote reveal" contenteditable="false">
+      Ce qui se passe dans ton cerveau ne <em>reste pas</em> dans ton cerveau.
+    </p>
+    <div class="rule reveal"></div>
+    <p class="s2-note reveal" contenteditable="false" style="font-size:clamp(0.85rem,1.3vw,1.05rem); line-height:1.8; max-width:50ch;">
+      Le gardien a coupé l'escalier. Le feu est passé au rouge. Mais l'histoire ne s'arrete pas la. Cette alarme déclenche une réaction dans ton <strong style="color:#e8e4df;font-weight:400;">corps</strong> — une énergie de survie qui se mobilise. Et si elle ne peut pas se libérer, elle reste piégée.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 09 — LA GAZELLE ET LE RESSORT
+     ============================================ -->
+<section class="slide" id="slide-9" aria-label="Slide 9">
+  <div class="orb orb-1" style="background:#d4a574; top:-15%; right:-10%;"></div>
+  <div class="orb orb-2" style="background:#c9b896; bottom:-5%; left:-5%; opacity:0.14;"></div>
+  <div class="accent-line"></div>
+  <div class="slide-number">09 / 20</div>
+
+  <div class="s3-content">
+    <div class="two-col">
+      <div class="col-left">
+        <div class="eyebrow reveal" contenteditable="false">Peter Levine · Somatic Experiencing</div>
+        <h2 class="s3-h2 reveal" contenteditable="false">La gazelle et <em>le ressort</em></h2>
+        <div class="rule-left reveal"></div>
+        <!-- SVG: Gazelle + Spring -->
+        <div class="svg-illustration reveal">
+          <svg viewBox="0 0 260 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Gazelle silhouette -->
+            <g transform="translate(10,20)">
+              <!-- Body -->
+              <ellipse cx="55" cy="60" rx="35" ry="18" stroke="#d4a574" stroke-width="1.2" fill="rgba(232,228,223,0.04)"/>
+              <!-- Neck -->
+              <path d="M80 50 Q85 30 78 15" stroke="#d4a574" stroke-width="1.2" fill="none"/>
+              <!-- Head -->
+              <ellipse cx="75" cy="12" rx="8" ry="6" stroke="#d4a574" stroke-width="1" fill="rgba(232,228,223,0.04)"/>
+              <!-- Horns -->
+              <path d="M78 7 Q82 -5 80 -10" stroke="#d4a574" stroke-width="0.8" fill="none"/>
+              <path d="M73 8 Q69 -3 72 -10" stroke="#d4a574" stroke-width="0.8" fill="none"/>
+              <!-- Legs -->
+              <line x1="35" y1="75" x2="30" y2="105" stroke="#d4a574" stroke-width="1"/>
+              <line x1="45" y1="75" x2="42" y2="105" stroke="#d4a574" stroke-width="1"/>
+              <line x1="65" y1="75" x2="68" y2="105" stroke="#d4a574" stroke-width="1"/>
+              <line x1="75" y1="75" x2="78" y2="105" stroke="#d4a574" stroke-width="1"/>
+              <!-- Tremble marks -->
+              <path d="M90 45 L96 43 L92 48 L98 46" stroke="#e8b4b8" stroke-width="0.8" opacity="0.6" fill="none"/>
+              <path d="M92 55 L98 53 L94 58 L100 56" stroke="#e8b4b8" stroke-width="0.8" opacity="0.5" fill="none"/>
+              <path d="M88 65 L94 63 L90 68 L96 66" stroke="#e8b4b8" stroke-width="0.8" opacity="0.4" fill="none"/>
+            </g>
+            <!-- Divider -->
+            <line x1="130" y1="40" x2="130" y2="160" stroke="rgba(232,228,223,0.1)" stroke-width="1"/>
+            <!-- Compressed spring -->
+            <g transform="translate(160,40)">
+              <!-- Spring coils -->
+              <path d="M20 0 Q50 8 20 16 Q-10 24 20 32 Q50 40 20 48 Q-10 56 20 64 Q50 72 20 80 Q-10 88 20 96" stroke="#e8b4b8" stroke-width="1.5" fill="none"/>
+              <!-- Compression arrows -->
+              <path d="M20 -10 L20 0 M15 -5 L20 -10 L25 -5" stroke="#d4a574" stroke-width="1" fill="none"/>
+              <path d="M20 106 L20 96 M15 101 L20 106 L25 101" stroke="#d4a574" stroke-width="1" fill="none"/>
+              <!-- Pressure label -->
+              <text x="55" y="50" font-family="IBM Plex Sans" font-size="7" fill="rgba(232,228,223,0.3)">énergie</text>
+              <text x="55" y="60" font-family="IBM Plex Sans" font-size="7" fill="rgba(232,228,223,0.3)">piégée</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div class="col-right">
+        <p class="s3-body reveal" contenteditable="false">
+          Une gazelle qui échappe à un lion <strong>tremble</strong> pendant plusieurs minutes. Tout son corps frissonne. Puis elle s'ébroue, se relève et repart. Aucun traumatisme.
+        </p>
+        <div class="concept-box reveal" style="margin-top: clamp(1rem, 2vh, 1.5rem);">
+          <div class="concept-label" contenteditable="false">Chez nous</div>
+          <p class="concept-text" contenteditable="false">On ne fait plus ça. On ravale. On « fait bonne figure ». L'énergie reste piégée dans le corps — comme un ressort sous pression permanente.</p>
+        </div>
+        <p class="s3-body reveal" style="margin-top: clamp(1rem, 2vh, 1.5rem);" contenteditable="false">
+          Des années plus tard, quand une situation ressemble — même vaguement — à celle d'origine, <strong>le ressort se comprime encore plus</strong>. Et tu bloques.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 9b — PONT : DU CORPS AUX VOIX
+     ============================================ -->
+<section class="slide" id="slide-9b" aria-label="Pont corps-voix">
+  <div class="orb orb-1" style="background:#e8b4b8; top:-10%; right:5%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:-5%; opacity:0.12;"></div>
+  <div class="slide-number">9b</div>
+
+  <div class="s2-content">
+    <div class="eyebrow reveal" contenteditable="false">Somatique → Psychologique</div>
+    <p class="s2-quote reveal" contenteditable="false">
+      L'énergie piégée ne reste pas <em>silencieuse</em>.
+    </p>
+    <div class="rule reveal"></div>
+    <p class="s2-note reveal" contenteditable="false" style="font-size:clamp(0.85rem,1.3vw,1.05rem); line-height:1.8; max-width:50ch;">
+      Le ressort comprimé dans ton corps active des <strong style="color:#e8e4df;font-weight:400;">voix intérieures</strong>. Des parts de toi qui essaient de gérer la situation — chacune a sa manière. Et c'est la que ca se complique : ces voix ne sont pas d'accord entre elles.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 10 — LES VOIX INTÉRIEURES
+     ============================================ -->
+<section class="slide" id="slide-10" aria-label="Slide 10 sur 20">
+  <div class="orb orb-1" style="background:#d4a574; top:-10%; left:-10%; right:auto;"></div>
+  <div class="orb orb-3" style="background:#e8b4b8; bottom:5%; right:10%;"></div>
+  <div class="slide-number">10 / 20</div>
+
+  <div class="s4-content">
+    <div class="s4-header">
+      <div class="eyebrow reveal" contenteditable="false">Richard Schwartz · IFS</div>
+      <h2 class="s4-h2 reveal" contenteditable="false">Les voix <em>intérieures</em></h2>
+    </div>
+    <div class="cards-grid-4">
+      <div class="card reveal">
+        <span class="card-icon" contenteditable="false">I.</span>
+        <div class="card-title" contenteditable="false">Le Perfectionniste</div>
+        <p class="card-body" contenteditable="false">« C'est pas encore assez bien. Retravaille. Peaufine. Attends d'être prêt. »</p>
+        <p class="card-examples" contenteditable="false">Il te protège de la honte de l'échec.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-icon" contenteditable="false">II.</span>
+        <div class="card-title" contenteditable="false">Le Critique Intérieur</div>
+        <p class="card-body" contenteditable="false">« Qui tu es pour faire ça ? Regarde les autres, ils sont bien meilleurs. »</p>
+        <p class="card-examples" contenteditable="false">Il te protège en te critiquant avant que les autres le fassent.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-icon" contenteditable="false">III.</span>
+        <div class="card-title" contenteditable="false">Le People Pleaser</div>
+        <p class="card-body" contenteditable="false">« Ne dérange pas. Ne demande pas d'argent. Sois gentil. »</p>
+        <p class="card-examples" contenteditable="false">Il te protège du rejet et de la perte d'amour.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-icon" contenteditable="false">IV.</span>
+        <div class="card-title" contenteditable="false">Le Pusher</div>
+        <p class="card-body" contenteditable="false">« Tu n'en fais jamais assez. Travaille plus. Dors moins. »</p>
+        <p class="card-examples" contenteditable="false">Il te protège de l'abandon en prouvant ta valeur par l'effort.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 11 — DEMARTINI : LE PRINCIPE DE POLARITÉ
+     ============================================ -->
+<section class="slide" id="slide-11" aria-label="Slide 11">
+  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-5%;"></div>
+  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:10%;"></div>
+  <div class="accent-line"></div>
+  <div class="slide-number">11</div>
+
+  <div class="s3-content">
+    <div class="two-col">
+      <div class="col-left">
+        <div class="eyebrow reveal" contenteditable="false">John Demartini · Polarités</div>
+        <h2 class="s3-h2 reveal" contenteditable="false">Chaque voix a un <em>opposé</em></h2>
+        <div class="rule-left reveal"></div>
+        <p class="s3-body reveal" contenteditable="false">
+          Schwartz nous a montré que tu as des voix qui te protègent. Demartini ajoute une découverte cruciale : ces voix <strong>ne travaillent jamais seules</strong>.
+        </p>
+        <p class="s3-body reveal" style="margin-top:clamp(0.75rem,1.5vh,1rem);" contenteditable="false">
+          Pour chaque voix dominante que tu entends, il y en a une autre — opposée — que tu <strong>n'entends pas</strong>. Parce que la première la <strong>refoule</strong>.
+        </p>
+      </div>
+      <div class="col-right">
+        <div class="concept-box reveal">
+          <div class="concept-label" contenteditable="false">Le principe de Demartini</div>
+          <p class="concept-text" contenteditable="false">La voix dominante est forte précisément parce qu'elle réprime l'autre. Plus elle pousse, plus l'autre résiste en silence.</p>
+        </div>
+        <div class="concept-box reveal" style="margin-top: clamp(0.75rem, 2vh, 1.25rem);">
+          <div class="concept-label" contenteditable="false">Ce que ca change</div>
+          <p class="concept-text" contenteditable="false">Le blocage ne vient pas d'une voix. Il vient du conflit entre les deux. C'est la guerre qui paralyse — pas l'une ou l'autre seule.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 11a — POURQUOI CA PARALYSE (exemple concret)
+     ============================================ -->
+<section class="slide" id="slide-11a" aria-label="Slide 11a">
+  <div class="orb orb-1" style="background:#c9b896; top:-10%; right:5%; opacity:0.13;"></div>
+  <div class="orb orb-2" style="background:#e8b4b8; bottom:-10%; left:-5%;"></div>
+  <div class="slide-number">11a</div>
+
+  <div class="centered-content">
+    <div class="eyebrow reveal" contenteditable="false">Le mécanisme en action</div>
+    <h2 class="centered-h2 reveal" contenteditable="false">La guerre <em>invisible</em></h2>
+    <div class="rule reveal"></div>
+    <p class="centered-body reveal" contenteditable="false" style="margin-bottom: clamp(1rem, 2vh, 1.5rem);">
+      Exemple : tu veux proposer ton offre a quelqu'un qui en a besoin.
+    </p>
+    <!-- SVG: One clear example — large -->
+    <div class="svg-illustration reveal" style="margin: 0 auto;">
+      <svg viewBox="0 0 520 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width:540px;">
+        <!-- LEFT: People Pleaser -->
+        <rect x="0" y="30" width="155" height="80" rx="6" fill="rgba(212,165,116,0.1)" stroke="rgba(212,165,116,0.4)" stroke-width="1.5"/>
+        <text x="77" y="55" text-anchor="middle" font-family="IBM Plex Sans" font-size="15" font-weight="400" fill="#d4a574">People Pleaser</text>
+        <text x="77" y="78" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(212,165,116,0.6)" font-style="italic">« ne dérange pas,</text>
+        <text x="77" y="96" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(212,165,116,0.6)" font-style="italic">sois gentil »</text>
+
+        <!-- Arrow LEFT — FREINE -->
+        <line x1="155" y1="70" x2="215" y2="70" stroke="#d4a574" stroke-width="2.5"/>
+        <path d="M160 63 L155 70 L160 77" stroke="#d4a574" stroke-width="2.5" fill="none"/>
+        <text x="185" y="58" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#d4a574" letter-spacing="0.15em" font-weight="400">FREINE</text>
+
+        <!-- CENTER: toi -->
+        <circle cx="260" cy="70" r="35" stroke="rgba(232,228,223,0.35)" stroke-width="1.5" fill="rgba(232,228,223,0.04)"/>
+        <text x="260" y="75" text-anchor="middle" font-family="Cormorant" font-size="22" fill="#e8e4df" font-style="italic">toi</text>
+
+        <!-- Arrow RIGHT — POUSSE -->
+        <line x1="305" y1="70" x2="365" y2="70" stroke="#e8b4b8" stroke-width="2.5"/>
+        <path d="M360 63 L365 70 L360 77" stroke="#e8b4b8" stroke-width="2.5" fill="none"/>
+        <text x="335" y="58" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#e8b4b8" letter-spacing="0.15em" font-weight="400">POUSSE</text>
+
+        <!-- RIGHT: Rebelle -->
+        <rect x="365" y="30" width="155" height="80" rx="6" fill="rgba(232,180,184,0.1)" stroke="rgba(232,180,184,0.4)" stroke-width="1.5"/>
+        <text x="442" y="55" text-anchor="middle" font-family="IBM Plex Sans" font-size="15" font-weight="400" fill="#e8b4b8">Rebelle</text>
+        <text x="442" y="78" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(232,180,184,0.6)" font-style="italic">« fonce, dis-le,</text>
+        <text x="442" y="96" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(232,180,184,0.6)" font-style="italic">ose enfin ! »</text>
+
+        <!-- Bottom: what happens -->
+        <line x1="120" y1="135" x2="400" y2="135" stroke="rgba(232,228,223,0.08)" stroke-width="1"/>
+        <text x="260" y="158" text-anchor="middle" font-family="Cormorant" font-size="17" fill="rgba(232,228,223,0.55)" font-style="italic">Aucune ne gagne. Tu ne proposes pas. Tu te juges.</text>
+        <text x="260" y="185" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="rgba(232,228,223,0.35)">Plus le People Pleaser freine, plus le Rebelle pousse — et inversement.</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 11b — LES 3 PAIRES DE POLARITÉS
+     ============================================ -->
+<section class="slide" id="slide-11b" aria-label="Slide 11b">
+  <div class="orb orb-1" style="background:#d4a574; top:-10%; left:-10%; right:auto;"></div>
+  <div class="orb orb-3" style="background:#e8b4b8; bottom:5%; right:10%;"></div>
+  <div class="slide-number">11b</div>
+
+  <div class="s5-content" style="max-width:min(900px,92vw);">
+    <div class="eyebrow reveal" contenteditable="false">Les Trois Paires</div>
+    <h2 class="s5-h2 reveal" contenteditable="false">Derrière chaque voix, son <em>opposée</em></h2>
+    <div class="rule-left reveal"></div>
+
+    <!-- Pair 1 -->
+    <div class="reveal" style="display:grid; grid-template-columns:1fr auto 1fr; gap:clamp(1rem,2vw,2rem); align-items:center; margin-bottom:clamp(1.25rem,2.5vh,2rem);">
+      <div style="border:1px solid rgba(212,165,116,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(212,165,116,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#d4a574; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">People Pleaser</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(212,165,116,0.65); font-style:italic;" contenteditable="false">« Ne dérange pas. Sois gentil. »</div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.3rem;">
+        <span style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.65rem,0.9vw,0.78rem); color:rgba(232,228,223,0.3); letter-spacing:0.2em;">VS</span>
+      </div>
+      <div style="border:1px solid rgba(232,180,184,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(232,180,184,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#e8b4b8; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Rebelle</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(232,180,184,0.65); font-style:italic;" contenteditable="false">« Dis non ! Envoie tout valser ! »</div>
+      </div>
+    </div>
+
+    <!-- Pair 2 -->
+    <div class="reveal" style="display:grid; grid-template-columns:1fr auto 1fr; gap:clamp(1rem,2vw,2rem); align-items:center; margin-bottom:clamp(1.25rem,2.5vh,2rem);">
+      <div style="border:1px solid rgba(212,165,116,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(212,165,116,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#d4a574; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Perfectionniste</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(212,165,116,0.65); font-style:italic;" contenteditable="false">« C'est pas pret. Retravaille. »</div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.3rem;">
+        <span style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.65rem,0.9vw,0.78rem); color:rgba(232,228,223,0.3); letter-spacing:0.2em;">VS</span>
+      </div>
+      <div style="border:1px solid rgba(232,180,184,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(232,180,184,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#e8b4b8; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Créatif sauvage</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(232,180,184,0.65); font-style:italic;" contenteditable="false">« Lance-toi maintenant ! »</div>
+      </div>
+    </div>
+
+    <!-- Pair 3 -->
+    <div class="reveal" style="display:grid; grid-template-columns:1fr auto 1fr; gap:clamp(1rem,2vw,2rem); align-items:center; margin-bottom:clamp(1rem,2vh,1.5rem);">
+      <div style="border:1px solid rgba(212,165,116,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(212,165,116,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#d4a574; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Pusher</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(212,165,116,0.65); font-style:italic;" contenteditable="false">« Travaille plus. Dors moins. »</div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.3rem;">
+        <span style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.65rem,0.9vw,0.78rem); color:rgba(232,228,223,0.3); letter-spacing:0.2em;">VS</span>
+      </div>
+      <div style="border:1px solid rgba(232,180,184,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(232,180,184,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#e8b4b8; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Épuisé</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(232,180,184,0.65); font-style:italic;" contenteditable="false">« Laisse-moi souffler... »</div>
+      </div>
+    </div>
+
+    <!-- Bottom insight -->
+    <div class="reveal" style="border-top:1px solid rgba(232,228,223,0.08); padding-top:clamp(0.75rem,1.5vh,1.25rem);">
+      <p class="s3-body" style="text-align:center;" contenteditable="false">
+        Tant que la voix refoulée n'est pas entendue, la voix dominante <strong>ne peut pas se détendre</strong>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 11d — LA CLÉ DE DEMARTINI : ÉCOUTER LES DEUX
+     ============================================ -->
+<section class="slide" id="slide-11d" aria-label="Slide 11d">
+  <div class="orb orb-1" style="background:#e8b4b8; top:-15%; right:5%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#d4a574; bottom:-10%; left:-5%; opacity:0.12;"></div>
+  <div class="orb orb-3" style="background:#c9b896; top:35%; left:25%;"></div>
+  <div class="slide-number">11d</div>
+
+  <div class="s2-content">
+    <div class="eyebrow reveal" contenteditable="false">La clé de Demartini</div>
+    <p class="s2-quote reveal" contenteditable="false">
+      La solution n'est pas de choisir un <em>camp</em>.
+    </p>
+    <div class="rule reveal"></div>
+    <p class="s2-note reveal" contenteditable="false" style="font-size:clamp(0.88rem,1.3vw,1.08rem); line-height:1.8; max-width:52ch;">
+      Combattre la voix dominante ne marche pas — elle se renforce. Ignorer la voix refoulée ne marche pas — elle revient en sabotage. La seule issue : <strong style="color:#e8e4df;font-weight:400;">écouter les deux</strong>. Reconnaître que chacune essaie de te protéger, a sa manière. Quand les deux sont entendues, la guerre s'arrete. L'énergie se libère. Et tu retrouves la capacité de décider.
+    </p>
+    <div class="rule reveal"></div>
+    <p class="s2-note reveal" contenteditable="false" style="font-size:clamp(0.82rem,1.2vw,1rem); margin-top:clamp(0.5rem,1vh,1rem); color:rgba(212,165,116,0.6);">
+      C'est exactement ce que fait la syntonisation « Traverser le Blocage » : elle donne la parole aux deux voix, dans un espace sur.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 11c — UNE SEULE CASCADE, TROIS SYSTÈMES
+     ============================================ -->
+<section class="slide" id="slide-11c" aria-label="Synthèse cascade">
+  <div class="orb orb-1" style="background:#d4a574; top:-15%; right:-10%;"></div>
+  <div class="orb orb-2" style="background:#c9b896; bottom:-5%; left:-5%; opacity:0.14;"></div>
+  <div class="accent-line"></div>
+  <div class="slide-number">11c</div>
+
+  <div class="s4-content">
+    <div class="s4-header">
+      <div class="eyebrow reveal" contenteditable="false">Une seule alarme</div>
+      <h2 class="s4-h2 reveal" contenteditable="false">Une cascade, trois <em>systèmes touchés</em></h2>
+      <p class="s3-body reveal" style="text-align:center; margin-top:clamp(0.5rem,1vh,0.75rem); max-width:55ch; margin-left:auto; margin-right:auto;" contenteditable="false">
+        Tout part du meme endroit : l'amygdale tire. En une fraction de seconde, <strong>trois systèmes</strong> sont impactés simultanément.
+      </p>
+    </div>
+    <div class="cards-grid">
+      <div class="card reveal" style="border-color: rgba(212,165,116,0.35);">
+        <span class="card-icon" contenteditable="false" style="color:#d4a574;">Cognitif</span>
+        <div class="card-title" contenteditable="false">Le cerveau se déconnecte</div>
+        <p class="card-body" contenteditable="false">L'amygdale inhibe le cortex préfrontal. Tu ne peux plus raisonner, décider, trouver tes mots. Le gardien a coupé l'escalier.</p>
+        <p class="card-examples" contenteditable="false" style="color:rgba(212,165,116,0.5);">Van der Kolk · Porges</p>
+      </div>
+      <div class="card reveal" style="border-color: rgba(201,184,150,0.35);">
+        <span class="card-icon" contenteditable="false" style="color:#c9b896;">Somatique</span>
+        <div class="card-title" contenteditable="false">Le corps se contracte</div>
+        <p class="card-body" contenteditable="false">Cortisol et adrénaline inondent le corps. Les muscles se contractent, les fascias se resserrent. Si tu ne peux pas fuir, l'énergie reste piégée. Le ressort.</p>
+        <p class="card-examples" contenteditable="false" style="color:rgba(201,184,150,0.5);">Peter Levine</p>
+      </div>
+      <div class="card reveal" style="border-color: rgba(232,180,184,0.35);">
+        <span class="card-icon" contenteditable="false" style="color:#e8b4b8;">Psychologique</span>
+        <div class="card-title" contenteditable="false">Les voix s'activent</div>
+        <p class="card-body" contenteditable="false">Des circuits neuronaux appris se déclenchent : les parts protectrices. Elles s'activent en paires opposées — comme deux muscles qui se contractent l'un contre l'autre. La guerre.</p>
+        <p class="card-examples" contenteditable="false" style="color:rgba(232,180,184,0.5);">Schwartz · Demartini</p>
+      </div>
+    </div>
+    <p class="s3-body reveal" style="text-align:center; margin-top:clamp(0.75rem,1.5vh,1.25rem);" contenteditable="false">
+      Ce ne sont pas trois problèmes séparés. C'est <strong>une seule cascade</strong> — et les trois systèmes s'alimentent mutuellement.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 12 — LA BOUCLE COMPLÈTE (triangle 3 systèmes)
+     ============================================ -->
+<section class="slide" id="slide-12" aria-label="Slide 12">
+  <div class="orb orb-1" style="background:#c9b896; top:-10%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#e8b4b8; bottom:-10%; left:-5%; opacity:0.14;"></div>
+  <div class="slide-number">12</div>
+
+  <div class="centered-content">
+    <div class="eyebrow reveal" contenteditable="false">La cascade en boucle</div>
+    <h2 class="centered-h2 reveal" contenteditable="false">Les trois systèmes <em>s'alimentent</em></h2>
+    <div class="rule reveal"></div>
+    <!-- SVG: Triangle diagram — 3 systems feeding each other -->
+    <div class="svg-illustration reveal" style="margin: clamp(0.5rem, 1vh, 1.5rem) auto;">
+      <svg viewBox="0 0 600 480" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;">
+        <defs>
+          <marker id="aGold" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto"><path d="M0 0 L12 5 L0 10" fill="#d4a574"/></marker>
+          <marker id="aSage" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto"><path d="M0 0 L12 5 L0 10" fill="#c9b896"/></marker>
+          <marker id="aPink" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto"><path d="M0 0 L12 5 L0 10" fill="#e8b4b8"/></marker>
+          <marker id="aWhite" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto"><path d="M0 0 L12 5 L0 10" fill="rgba(232,228,223,0.4)"/></marker>
+        </defs>
+
+        <!-- DÉCLENCHEUR (top) -->
+        <rect x="190" y="0" width="220" height="48" rx="6" fill="#0f0f0f" stroke="rgba(232,228,223,0.35)" stroke-width="1.5"/>
+        <text x="300" y="20" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,228,223,0.4)" letter-spacing="0.2em">DÉCLENCHEUR</text>
+        <text x="300" y="39" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" fill="#e8e4df" contenteditable="false">proposer, publier, décider...</text>
+        <line x1="300" y1="48" x2="300" y2="78" stroke="rgba(232,228,223,0.25)" stroke-width="2" marker-end="url(#aWhite)"/>
+
+        <!-- COGNITIF (top of triangle) -->
+        <rect x="170" y="80" width="260" height="75" rx="8" fill="rgba(212,165,116,0.06)" stroke="rgba(212,165,116,0.5)" stroke-width="2"/>
+        <text x="300" y="105" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="rgba(212,165,116,0.6)" letter-spacing="0.2em">COGNITIF</text>
+        <text x="300" y="128" text-anchor="middle" font-family="IBM Plex Sans" font-size="17" font-weight="400" fill="#d4a574" contenteditable="false">Le cortex se déconnecte</text>
+        <text x="300" y="148" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(212,165,116,0.5)" contenteditable="false">tu ne peux plus décider ni raisonner</text>
+
+        <!-- SOMATIQUE (bottom left) -->
+        <rect x="0" y="330" width="230" height="75" rx="8" fill="rgba(201,184,150,0.06)" stroke="rgba(201,184,150,0.5)" stroke-width="2"/>
+        <text x="115" y="355" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="rgba(201,184,150,0.6)" letter-spacing="0.2em">SOMATIQUE</text>
+        <text x="115" y="378" text-anchor="middle" font-family="IBM Plex Sans" font-size="17" font-weight="400" fill="#c9b896" contenteditable="false">Le corps se contracte</text>
+        <text x="115" y="398" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(201,184,150,0.5)" contenteditable="false">énergie piégée, noeud, tension</text>
+
+        <!-- PSYCHOLOGIQUE (bottom right) -->
+        <rect x="370" y="330" width="230" height="75" rx="8" fill="rgba(232,180,184,0.06)" stroke="rgba(232,180,184,0.5)" stroke-width="2"/>
+        <text x="485" y="355" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="rgba(232,180,184,0.6)" letter-spacing="0.2em">PSYCHOLOGIQUE</text>
+        <text x="485" y="378" text-anchor="middle" font-family="IBM Plex Sans" font-size="17" font-weight="400" fill="#e8b4b8" contenteditable="false">Les voix s'activent</text>
+        <text x="485" y="398" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(232,180,184,0.5)" contenteditable="false">paires opposées en guerre</text>
+
+        <!-- ARROWS: Cognitif → Somatique (left side down) -->
+        <path d="M200 155 L125 330" stroke="#d4a574" stroke-width="2.5" marker-end="url(#aSage)"/>
+        <!-- ARROWS: Somatique → Cognitif (left side up) -->
+        <path d="M145 328 L215 158" stroke="#c9b896" stroke-width="2.5" marker-end="url(#aGold)"/>
+
+        <!-- ARROWS: Cognitif → Psychologique (right side down) -->
+        <path d="M400 155 L475 330" stroke="#d4a574" stroke-width="2.5" marker-end="url(#aPink)"/>
+        <!-- ARROWS: Psychologique → Cognitif (right side up) -->
+        <path d="M455 328 L385 158" stroke="#e8b4b8" stroke-width="2.5" marker-end="url(#aGold)"/>
+
+        <!-- ARROWS: Somatique → Psychologique (bottom, right) -->
+        <line x1="230" y1="358" x2="370" y2="358" stroke="#c9b896" stroke-width="2.5" marker-end="url(#aPink)"/>
+        <!-- ARROWS: Psychologique → Somatique (bottom, left) -->
+        <line x1="370" y1="378" x2="230" y2="378" stroke="#e8b4b8" stroke-width="2.5" marker-end="url(#aSage)"/>
+
+        <!-- Labels on arrows — white, readable -->
+        <!-- Left side -->
+        <rect x="100" y="225" width="90" height="36" rx="4" fill="#0f0f0f"/>
+        <text x="145" y="240" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,228,223,0.55)">alarme</text>
+        <text x="145" y="255" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,228,223,0.55)">↕ tension</text>
+        <!-- Right side -->
+        <rect x="410" y="225" width="90" height="36" rx="4" fill="#0f0f0f"/>
+        <text x="455" y="240" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,228,223,0.55)">cortex off</text>
+        <text x="455" y="255" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,228,223,0.55)">↕ pensées</text>
+        <!-- Bottom -->
+        <rect x="265" y="350" width="70" height="36" rx="4" fill="#0f0f0f"/>
+        <text x="300" y="365" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,228,223,0.55)">tension</text>
+        <text x="300" y="380" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,228,223,0.55)">↕ voix</text>
+
+        <!-- CENTER: Paralysie -->
+        <circle cx="300" cy="265" r="48" fill="#0f0f0f" stroke="rgba(232,228,223,0.25)" stroke-width="2"/>
+        <text x="300" y="260" text-anchor="middle" font-family="Cormorant" font-size="24" fill="#e8e4df" font-style="italic">Paralysie</text>
+        <text x="300" y="282" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="rgba(232,228,223,0.45)">boucle fermée</text>
+
+        <!-- Bottom caption -->
+        <text x="300" y="445" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" fill="rgba(232,228,223,0.5)" contenteditable="false">La boucle ne se résout pas par la pensée</text>
+        <text x="300" y="468" text-anchor="middle" font-family="Cormorant" font-size="18" fill="#e8e4df" font-style="italic" contenteditable="false">la pensée fait partie de la boucle.</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 13 — LES TROIS IMPASSES (comportements erronés)
+     ============================================ -->
+<section class="slide" id="slide-13" aria-label="Slide 13 sur 23">
+  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:10%;"></div>
+  <div class="slide-number">13 / 23</div>
+
+  <div class="s4-content">
+    <div class="s4-header">
+      <div class="eyebrow reveal" contenteditable="false">Les Fausses Solutions</div>
+      <h2 class="s4-h2 reveal" contenteditable="false">Ce qu'on fait tous — et qui <em>ne marche pas</em></h2>
+    </div>
+    <div class="cards-grid">
+      <!-- Impasse 1: Penser -->
+      <div class="card reveal" style="border-color: rgba(212,165,116,0.3);">
+        <span class="card-icon" contenteditable="false">I.</span>
+        <div class="card-title" contenteditable="false">Penser sa sortie</div>
+        <p class="card-body" contenteditable="false">
+          Refaire un plan d'action. Relire une formation. Écouter un podcast de plus. Réfléchir encore a sa stratégie.
+        </p>
+        <p class="card-examples" contenteditable="false" style="color:rgba(232,180,184,0.6);">Pourquoi ça échoue : le cortex est déconnecté. Tu essaies de démarrer une voiture avec la batterie à plat.</p>
+      </div>
+      <!-- Impasse 2: Forcer -->
+      <div class="card reveal" style="border-color: rgba(212,165,116,0.3);">
+        <span class="card-icon" contenteditable="false">II.</span>
+        <div class="card-title" contenteditable="false">Forcer le passage</div>
+        <p class="card-body" contenteditable="false">
+          Se forcer à publier. S'obliger à appeler. Se dire « cette fois, j'y vais ». Culpabiliser pour se motiver.
+        </p>
+        <p class="card-examples" contenteditable="false" style="color:rgba(232,180,184,0.6);">Pourquoi ça échoue : plus tu pousses, plus le gardien verrouille. La résistance se renforce.</p>
+      </div>
+      <!-- Impasse 3: Ignorer -->
+      <div class="card reveal" style="border-color: rgba(212,165,116,0.3);">
+        <span class="card-icon" contenteditable="false">III.</span>
+        <div class="card-title" contenteditable="false">Ignorer et contourner</div>
+        <p class="card-body" contenteditable="false">
+          Passer à autre chose. S'occuper de tâches secondaires. Réorganiser son bureau. « Je m'en occuperai demain. »
+        </p>
+        <p class="card-examples" contenteditable="false" style="color:rgba(232,180,184,0.6);">Pourquoi ça échoue : l'énergie piégée ne part pas. Le rocher grossit. Il reviendra au pire moment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 13b — LA SORTIE : TRAVERSER
+     ============================================ -->
+<section class="slide" id="slide-13b" aria-label="Slide 13b sur 23">
+  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:-5%; opacity:0.13;"></div>
+  <div class="orb orb-3" style="background:#c9b896; top:35%; left:25%;"></div>
+  <div class="slide-number">13b / 23</div>
+
+  <div class="s2-content">
+    <div class="eyebrow reveal" contenteditable="false">La Sortie</div>
+    <p class="s2-quote reveal" contenteditable="false">
+      La seule sortie, c'est de <em>traverser</em>.
+    </p>
+    <div class="rule reveal"></div>
+    <p class="s2-note reveal" contenteditable="false" style="font-size:clamp(0.85rem,1.3vw,1.05rem); line-height:1.8; max-width:50ch;">Descendre dans le corps, la ou l'énergie est piégée. Rester avec la sensation. Écouter les voix. Laisser émerger la clarté. Et agir depuis cet endroit calme.</p>
+    <div class="rule reveal"></div>
+    <p class="s2-note reveal" contenteditable="false" style="font-size:clamp(0.8rem,1.2vw,1rem); margin-top:clamp(0.5rem,1vh,1rem);">Le tremblement de la gazelle — en version humaine, guidée et consciente.</p>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 14 — CE QUE FONT LES SYNTONISATIONS
+     ============================================ -->
+<section class="slide" id="slide-14" aria-label="Slide 14 sur 20">
+  <div class="orb orb-1" style="background:#d4a574; top:-10%; right:-5%;"></div>
+  <div class="orb orb-3" style="background:#c9b896; bottom:20%; left:5%; opacity:0.14;"></div>
+  <div class="slide-number">14 / 20</div>
+
+  <div class="s3-content">
+    <div class="two-col">
+      <div class="col-left">
+        <div class="eyebrow reveal" contenteditable="false">Le Mécanisme</div>
+        <h2 class="s3-h2 reveal" contenteditable="false">Ce que font les syntonisations dans <em>ton cerveau</em></h2>
+        <div class="rule-left reveal"></div>
+        <!-- SVG: House with reopening arrows -->
+        <div class="svg-illustration reveal">
+          <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Roof -->
+            <path d="M110 20 L30 80 L190 80 Z" stroke="#d4a574" stroke-width="1.5" fill="rgba(232,228,223,0.04)"/>
+            <!-- Top floor (Stratège) — reconnecting -->
+            <rect x="40" y="80" width="140" height="55" stroke="#d4a574" stroke-width="1.2" fill="rgba(212,165,116,0.06)"/>
+            <text x="110" y="105" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="#d4a574" letter-spacing="0.1em">STRATÈGE</text>
+            <text x="110" y="118" text-anchor="middle" font-family="IBM Plex Sans" font-size="7" fill="rgba(212,165,116,0.6)">nouveaux circuits</text>
+            <!-- Middle floor (Radar) — calmed -->
+            <rect x="40" y="135" width="140" height="55" stroke="#e8b4b8" stroke-width="1.2" fill="rgba(232,180,184,0.04)"/>
+            <text x="110" y="160" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="#e8b4b8" letter-spacing="0.1em">RADAR</text>
+            <text x="110" y="173" text-anchor="middle" font-family="IBM Plex Sans" font-size="7" fill="rgba(232,180,184,0.6)">signaux apaisés</text>
+            <!-- Ground floor (Gardien) — calm -->
+            <rect x="40" y="190" width="140" height="55" stroke="#c9b896" stroke-width="1.2" fill="rgba(201,184,150,0.06)"/>
+            <text x="110" y="215" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="#c9b896" letter-spacing="0.1em">GARDIEN</text>
+            <text x="110" y="228" text-anchor="middle" font-family="IBM Plex Sans" font-size="7" fill="rgba(201,184,150,0.6)">en sécurité</text>
+            <!-- Reopening arrows (upward flow) -->
+            <path d="M185 230 C200 210 200 180 185 165" stroke="#c9b896" stroke-width="1.2" fill="none" marker-end="url(#arrowUp1)"/>
+            <path d="M185 165 C200 145 200 115 185 100" stroke="#e8b4b8" stroke-width="1.2" fill="none" marker-end="url(#arrowUp2)"/>
+            <defs>
+              <marker id="arrowUp1" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0 0 L6 2.5 L0 5" fill="#c9b896"/></marker>
+              <marker id="arrowUp2" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0 0 L6 2.5 L0 5" fill="#e8b4b8"/></marker>
+            </defs>
+            <!-- Staircase — restored -->
+            <line x1="70" y1="245" x2="70" y2="80" stroke="rgba(212,165,116,0.3)" stroke-width="1.5"/>
+            <!-- Foundation -->
+            <line x1="30" y1="245" x2="190" y2="245" stroke="#d4a574" stroke-width="1.5"/>
+            <!-- Step labels -->
+            <text x="205" y="228" font-family="IBM Plex Sans" font-size="7" fill="rgba(201,184,150,0.5)">étape 1</text>
+            <text x="205" y="163" font-family="IBM Plex Sans" font-size="7" fill="rgba(232,180,184,0.5)">étape 2</text>
+            <text x="205" y="100" font-family="IBM Plex Sans" font-size="7" fill="rgba(212,165,116,0.5)">étape 3</text>
+          </svg>
+        </div>
+      </div>
+      <div class="col-right">
+        <ol class="steps">
+          <li class="step reveal">
+            <span class="step-num" contenteditable="false">1</span>
+            <div class="step-body">
+              <span class="step-title" contenteditable="false">Calmer le gardien</span>
+              <span class="step-desc" contenteditable="false">Par la respiration lente et l'ancrage corporel, on envoie un signal direct au système nerveux : « tu es en sécurité ». Le feu passe à vert.</span>
+            </div>
+          </li>
+          <li class="step reveal">
+            <span class="step-num" contenteditable="false">2</span>
+            <div class="step-body">
+              <span class="step-title" contenteditable="false">Apaiser le radar</span>
+              <span class="step-desc" contenteditable="false">On entre dans le silence, dans le « rien ». L'amygdale se désactive progressivement. Le bruit intérieur diminue.</span>
+            </div>
+          </li>
+          <li class="step reveal">
+            <span class="step-num" contenteditable="false">3</span>
+            <div class="step-body">
+              <span class="step-title" contenteditable="false">Rallumer le stratège, autrement</span>
+              <span class="step-desc" contenteditable="false">Le cortex préfrontal se reconnecte. On lui donne une intention claire combinée à une émotion élevée — joie, gratitude, confiance. Nouveaux circuits.</span>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================
+     SLIDE 16 — LE PROBLÈME QUE LES SYNTONISATIONS NE RÉSOLVENT PAS
+     ============================================ -->
+<section class="slide" id="slide-16" aria-label="Slide 16 sur 20">
+  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:-5%; opacity:0.13;"></div>
+  <div class="slide-number">16 / 20</div>
+
+  <div class="centered-content">
+    <div class="eyebrow reveal" contenteditable="false">La Limite</div>
+    <h2 class="centered-h2 reveal" contenteditable="false">Le problème que les syntonisations <em>ne résolvent pas</em></h2>
+    <div class="rule reveal"></div>
+    <!-- SVG: Road with boulder — full width, very explicit -->
+    <div class="svg-illustration reveal" style="margin: clamp(1.5rem, 3vh, 2.5rem) auto;">
+      <svg viewBox="0 0 560 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width:560px;">
+        <!-- Road surface -->
+        <rect x="0" y="195" width="560" height="40" rx="3" fill="rgba(232,228,223,0.04)"/>
+        <path d="M0 215 L560 215" stroke="rgba(232,228,223,0.12)" stroke-width="1"/>
+        <!-- Road dashes -->
+        <path d="M20 205 L155 205" stroke="rgba(232,228,223,0.1)" stroke-width="1" stroke-dasharray="10 8"/>
+        <path d="M410 205 L540 205" stroke="rgba(232,228,223,0.1)" stroke-width="1" stroke-dasharray="10 8"/>
+
+        <!-- LEFT: Ton élan (arrow blocked) -->
+        <line x1="20" y1="185" x2="165" y2="185" stroke="#d4a574" stroke-width="2.5"/>
+        <path d="M158 177 L172 185 L158 193" stroke="#d4a574" stroke-width="2.5" fill="none"/>
+        <text x="90" y="170" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" font-weight="400" fill="#d4a574" letter-spacing="0.08em">TON ÉLAN</text>
+
+        <!-- BLOCKED X -->
+        <line x1="175" y1="165" x2="195" y2="185" stroke="rgba(232,228,223,0.35)" stroke-width="2"/>
+        <line x1="195" y1="165" x2="175" y2="185" stroke="rgba(232,228,223,0.35)" stroke-width="2"/>
+
+        <!-- BOULDER — very big and prominent -->
+        <ellipse cx="285" cy="150" rx="85" ry="68" stroke="#e8b4b8" stroke-width="2.5" fill="rgba(232,180,184,0.06)"/>
+        <ellipse cx="285" cy="140" rx="62" ry="45" stroke="rgba(232,180,184,0.2)" stroke-width="1" fill="none"/>
+        <!-- Texture lines -->
+        <path d="M240 130 Q270 115 310 133" stroke="rgba(232,180,184,0.12)" stroke-width="1" fill="none"/>
+        <path d="M250 155 Q285 142 320 158" stroke="rgba(232,180,184,0.1)" stroke-width="1" fill="none"/>
+        <!-- Boulder labels -->
+        <text x="285" y="140" text-anchor="middle" font-family="Cormorant" font-size="24" fill="#e8b4b8" font-style="italic">le rocher</text>
+        <text x="285" y="165" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(232,180,184,0.65)">ce truc que tu repousses</text>
+
+        <!-- RIGHT: Ta nouvelle réalité (inaccessible) -->
+        <rect x="395" y="130" width="155" height="55" rx="6" fill="rgba(212,165,116,0.06)" stroke="rgba(212,165,116,0.25)" stroke-width="1" stroke-dasharray="6 4"/>
+        <text x="472" y="155" text-anchor="middle" font-family="Cormorant" font-size="18" fill="rgba(212,165,116,0.5)" font-style="italic">ta nouvelle réalité</text>
+        <text x="472" y="175" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(212,165,116,0.35)">plus de clients, plus de revenus</text>
+        <!-- Faded arrow on the other side -->
+        <path d="M405 185 L530 185" stroke="rgba(212,165,116,0.15)" stroke-width="1.5" stroke-dasharray="6 4"/>
+      </svg>
+    </div>
+    <p class="centered-body reveal" contenteditable="false">
+      Les syntonisations construisent des <strong>nouvelles routes</strong>. Mais parfois, le problème n'est pas qu'il manque une route. Le problème, c'est qu'il y a <em>un rocher en travers de la route qui existe déjà</em>.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 17 — TRAVERSER LE BLOCAGE : ENLEVER LE ROCHER
+     ============================================ -->
+<section class="slide" id="slide-17" aria-label="Slide 17 sur 20">
+  <div class="orb orb-1" style="background:#d4a574; top:-10%; right:-5%;"></div>
+  <div class="orb orb-3" style="background:#c9b896; bottom:20%; left:5%; opacity:0.14;"></div>
+  <div class="accent-line"></div>
+  <div class="slide-number">17 / 20</div>
+
+  <div class="s6-content">
+    <div class="eyebrow reveal" contenteditable="false">L'Outil</div>
+    <h2 class="s6-h2 reveal" contenteditable="false">« Traverser le Blocage » : <em>enlever le rocher</em></h2>
+    <!-- SVG: Clear road -->
+    <div class="svg-illustration reveal" style="margin: clamp(0.5rem, 1vh, 1rem) 0;">
+      <svg viewBox="0 0 300 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width:260px;">
+        <!-- Road -->
+        <path d="M0 60 L300 60" stroke="rgba(232,228,223,0.2)" stroke-width="1"/>
+        <rect x="0" y="55" width="300" height="10" fill="rgba(232,228,223,0.03)"/>
+        <!-- Center line — clear -->
+        <path d="M10 50 L290 50" stroke="rgba(232,228,223,0.1)" stroke-width="0.5" stroke-dasharray="8 6"/>
+        <!-- Arrow flowing through -->
+        <line x1="30" y1="42" x2="260" y2="42" stroke="#d4a574" stroke-width="1.2"/>
+        <path d="M255 37 L268 42 L255 47" stroke="#d4a574" stroke-width="1.2" fill="none"/>
+        <!-- Small dust particles where boulder was -->
+        <circle cx="150" cy="50" r="1.5" fill="rgba(232,180,184,0.2)"/>
+        <circle cx="155" cy="53" r="1" fill="rgba(232,180,184,0.15)"/>
+        <circle cx="145" cy="52" r="1" fill="rgba(232,180,184,0.15)"/>
+        <!-- Light rays -->
+        <line x1="150" y1="20" x2="150" y2="30" stroke="rgba(212,165,116,0.15)" stroke-width="0.5"/>
+        <line x1="140" y1="22" x2="143" y2="31" stroke="rgba(212,165,116,0.1)" stroke-width="0.5"/>
+        <line x1="160" y1="22" x2="157" y2="31" stroke="rgba(212,165,116,0.1)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <ol class="steps">
+      <li class="step reveal">
+        <span class="step-num" contenteditable="false">1</span>
+        <div class="step-body">
+          <span class="step-title" contenteditable="false">Elle part d'un blocage réel et nommé</span>
+          <span class="step-desc" contenteditable="false">Pas une intention abstraite. Un truc concret : « je n'arrive pas à envoyer ce message à ce prospect. »</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num" contenteditable="false">2</span>
+        <div class="step-body">
+          <span class="step-title" contenteditable="false">Elle entre dans la sensation corporelle</span>
+          <span class="step-desc" contenteditable="false">Le nœud, la boule, la tension — on la localise, on l'explore, on reste avec. C'est là que l'énergie piégée se libère.</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num" contenteditable="false">3</span>
+        <div class="step-body">
+          <span class="step-title" contenteditable="false">Elle dialogue avec les voix qui se battent</span>
+          <span class="step-desc" contenteditable="false">On écoute la voix dominante, on comprend ce qu'elle protège. Puis la voix opposée. Les deux arrêtent de se battre.</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num" contenteditable="false">4</span>
+        <div class="step-body">
+          <span class="step-title" contenteditable="false">Elle se termine par une action concrète dans les 48h</span>
+          <span class="step-desc" contenteditable="false">Pas un bon feeling. Une action. Nommée. Avec une échéance. Le blocage n'est traversé que quand tu agis de l'autre côté.</span>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 18 — LES SIGNAUX : QUAND L'UTILISER
+     ============================================ -->
+<section class="slide" id="slide-18" aria-label="Slide 18 sur 23">
+  <div class="orb orb-1" style="background:#c9b896; top:-10%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#e8b4b8; bottom:-10%; left:-5%; opacity:0.14;"></div>
+  <div class="slide-number">18 / 23</div>
+
+  <div class="s4-content">
+    <div class="s4-header">
+      <div class="eyebrow reveal" contenteditable="false">Les Signaux</div>
+      <h2 class="s4-h2 reveal" contenteditable="false">Comment savoir que c'est <em>le moment</em></h2>
+    </div>
+    <div class="cards-grid">
+      <!-- Corps -->
+      <div class="card reveal" style="border-color: rgba(201,184,150,0.3);">
+        <span class="card-icon" contenteditable="false" style="color:#c9b896;">Corps</span>
+        <p class="card-body" contenteditable="false"><strong>Noeud dans le ventre</strong> quand tu penses a un truc précis</p>
+        <div style="height:1px; background:rgba(232,228,223,0.06); margin:0.5rem 0;"></div>
+        <p class="card-body" contenteditable="false"><strong>Gorge serrée</strong> avant de prendre la parole ou de te montrer</p>
+        <div style="height:1px; background:rgba(232,228,223,0.06); margin:0.5rem 0;"></div>
+        <p class="card-body" contenteditable="false"><strong>Fatigue soudaine</strong> au moment ou tu t'appretes a agir</p>
+      </div>
+      <!-- Tête -->
+      <div class="card reveal" style="border-color: rgba(212,165,116,0.3);">
+        <span class="card-icon" contenteditable="false" style="color:#d4a574;">Tete</span>
+        <p class="card-body" contenteditable="false">Tu <strong>tournes en rond</strong> sur une décision depuis plus de 48h</p>
+        <div style="height:1px; background:rgba(232,228,223,0.06); margin:0.5rem 0;"></div>
+        <p class="card-body" contenteditable="false">Tu prépares, peaufines — mais tu <strong>ne lances pas</strong></p>
+        <div style="height:1px; background:rgba(232,228,223,0.06); margin:0.5rem 0;"></div>
+        <p class="card-body" contenteditable="false">Tu penses <strong>« je suis pas légitime »</strong> ou « c'est pas le bon moment »</p>
+      </div>
+      <!-- Émotions -->
+      <div class="card reveal" style="border-color: rgba(232,180,184,0.3);">
+        <span class="card-icon" contenteditable="false" style="color:#e8b4b8;">Émotions</span>
+        <p class="card-body" contenteditable="false"><strong>Irritabilité disproportionnée</strong> face a un truc simple</p>
+        <div style="height:1px; background:rgba(232,228,223,0.06); margin:0.5rem 0;"></div>
+        <p class="card-body" contenteditable="false">Envie de <strong>tout lacher</strong> sans raison claire</p>
+        <div style="height:1px; background:rgba(232,228,223,0.06); margin:0.5rem 0;"></div>
+        <p class="card-body" contenteditable="false">Productif partout <strong>sauf sur cette chose-la</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 18b — LE PROTOCOLE EN 4 ÉTAPES
+     ============================================ -->
+<section class="slide" id="slide-18b" aria-label="Slide 18b sur 21">
+  <div class="orb orb-1" style="background:#d4a574; top:-15%; right:-10%;"></div>
+  <div class="orb orb-3" style="background:#c9b896; bottom:20%; left:5%; opacity:0.14;"></div>
+  <div class="accent-line"></div>
+  <div class="slide-number">18b / 21</div>
+
+  <div class="s6-content">
+    <div class="eyebrow reveal" contenteditable="false">Mode d'emploi</div>
+    <h2 class="s6-h2 reveal" contenteditable="false">Le protocole en <em>4 étapes</em></h2>
+    <ol class="steps">
+      <li class="step reveal">
+        <span class="step-num" contenteditable="false">1</span>
+        <div class="step-body">
+          <span class="step-title" contenteditable="false">Identifie le sujet qui bloque</span>
+          <span class="step-desc" contenteditable="false">Une décision, une action, une conversation. Quelque chose de concret, pas un sentiment vague.</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num" contenteditable="false">2</span>
+        <div class="step-body">
+          <span class="step-title" contenteditable="false">Lance la syntonisation</span>
+          <span class="step-desc" contenteditable="false">25-30 minutes, seul, au calme. Dans la bibliothèque Circle, rubrique « Traverser le Blocage ».</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num" contenteditable="false">3</span>
+        <div class="step-body">
+          <span class="step-title" contenteditable="false">Note l'action qui émerge</span>
+          <span class="step-desc" contenteditable="false">À la fin de la pratique, une action concrète va se présenter. Écris-la immédiatement.</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num" contenteditable="false">4</span>
+        <div class="step-body">
+          <span class="step-title" contenteditable="false">Fais-la dans les 48 heures</span>
+          <span class="step-desc" contenteditable="false">C'est non négociable. Le blocage n'est traversé que quand tu agis de l'autre côté. Plus tu l'utilises, plus les rochers deviennent petits.</span>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 19 — TROIS PERMISSIONS
+     ============================================ -->
+<section class="slide" id="slide-19" aria-label="Slide 19 sur 20">
+  <div class="orb orb-1" style="background:#d4a574; top:-10%; left:-10%; right:auto;"></div>
+  <div class="orb orb-3" style="background:#e8b4b8; bottom:5%; right:10%;"></div>
+  <div class="slide-number">19 / 20</div>
+
+  <div class="s4-content">
+    <div class="s4-header">
+      <div class="eyebrow reveal" contenteditable="false">Avant de Commencer</div>
+      <h2 class="s4-h2 reveal" contenteditable="false">Trois <em>permissions</em></h2>
+    </div>
+    <div class="cards-grid">
+      <div class="card reveal">
+        <span class="card-icon" contenteditable="false">I.</span>
+        <div class="card-title" contenteditable="false">Pas de bonne réponse</div>
+        <p class="card-body" contenteditable="false">Si tu ne sens rien, c'est OK. Si tu sens beaucoup, c'est OK. Si tu t'endors, c'est OK — ton corps prend ce dont il a besoin.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-icon" contenteditable="false">II.</span>
+        <div class="card-title" contenteditable="false">Reste dans le corps</div>
+        <p class="card-body" contenteditable="false">Le mental va essayer de reprendre le contrôle — c'est son job. Quand ça arrive, reviens doucement à la sensation. Sans te juger.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-icon" contenteditable="false">III.</span>
+        <div class="card-title" contenteditable="false">Ce n'est pas de la thérapie</div>
+        <p class="card-body" contenteditable="false">On ne guérit pas un trauma en 25 minutes. On débloque une situation concrète. On libère assez d'énergie pour retrouver la capacité d'agir.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 20 — CONNECTE-TOI À TON ROCHER
+     ============================================ -->
+<section class="slide" id="slide-20" aria-label="Slide 20 sur 20">
+  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:-5%; opacity:0.13;"></div>
+  <div class="orb orb-3" style="background:#c9b896; top:35%; left:25%;"></div>
+  <div class="slide-number">20 / 20</div>
+
+  <div class="s7-content">
+    <div class="s7-exercise-label reveal" contenteditable="false">Pratique Guidée · Connexion</div>
+    <p class="s7-instruction reveal" contenteditable="false">
+      Connecte-toi à <em>ton rocher</em>.
+    </p>
+    <div class="s7-divider reveal"></div>
+    <p class="s7-sub reveal" contenteditable="false">
+      Ferme les yeux. Pense à ton activité. Il y a quelque chose que tu repousses. Quelque chose de précis. Laisse ce truc remonter. Ne le choisis pas avec ta tête — laisse venir celui qui s'impose.
+    </p>
+    <div class="s7-divider reveal"></div>
+    <p class="s7-sub reveal" contenteditable="false">
+      Tu le sens ? Peut-être un serrement, une tension, un inconfort subtil quelque part dans ton corps. C'est lui. C'est ton rocher. On va le traverser ensemble.
+    </p>
+  </div>
+</section>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   =========================================== */
+class SlidePresentation {
+  constructor() {
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.total = this.slides.length;
+    this.current = 0;
+    this.isScrolling = false;
+
+    this.setupIntersectionObserver();
+    this.setupKeyboardNav();
+    this.setupTouchNav();
+    this.setupWheelNav();
+    this.setupProgressBar();
+    this.setupNavDots();
+
+    // Trigger first slide immediately
+    this.slides[0].classList.add('visible');
+  }
+
+  /* --- Intersection Observer: reveal animations --- */
+  setupIntersectionObserver() {
+    const options = { threshold: 0.4 };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          const idx = this.slides.indexOf(entry.target);
+          if (idx !== -1) {
+            this.current = idx;
+            this.updateProgressBar();
+            this.updateNavDots();
+          }
+        }
+      });
+    }, options);
+
+    this.slides.forEach(slide => observer.observe(slide));
+  }
+
+  /* --- Keyboard Navigation --- */
+  setupKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      if (document.body.classList.contains('editing')) {
+        if (e.key === 'Escape') window.editor && editor.exitEditMode();
+        return;
+      }
+      switch (e.key) {
+        case 'ArrowDown':
+        case 'ArrowRight':
+        case ' ':
+        case 'PageDown':
+          e.preventDefault();
+          this.goTo(this.current + 1);
+          break;
+        case 'ArrowUp':
+        case 'ArrowLeft':
+        case 'PageUp':
+          e.preventDefault();
+          this.goTo(this.current - 1);
+          break;
+        case 'Home':
+          e.preventDefault();
+          this.goTo(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          this.goTo(this.total - 1);
+          break;
+        case 'e':
+        case 'E':
+          if (!e.target.getAttribute('contenteditable') || e.target.getAttribute('contenteditable') === 'false') {
+            window.editor && editor.toggleEditMode();
+          }
+          break;
+      }
+    });
+  }
+
+  /* --- Touch / Swipe Navigation --- */
+  setupTouchNav() {
+    let startY = 0;
+    let startX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].clientY;
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      const dY = startY - e.changedTouches[0].clientY;
+      const dX = startX - e.changedTouches[0].clientX;
+      if (Math.abs(dY) > Math.abs(dX) && Math.abs(dY) > 50) {
+        if (dY > 0) this.goTo(this.current + 1);
+        else this.goTo(this.current - 1);
+      }
+    }, { passive: true });
+  }
+
+  /* --- Mouse Wheel Navigation --- */
+  setupWheelNav() {
+    let lastWheel = 0;
+    document.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const now = Date.now();
+      if (now - lastWheel < 700) return;
+      lastWheel = now;
+      if (e.deltaY > 0) this.goTo(this.current + 1);
+      else this.goTo(this.current - 1);
+    }, { passive: false });
+  }
+
+  /* --- Navigate to slide index --- */
+  goTo(idx) {
+    if (idx < 0 || idx >= this.total) return;
+    this.current = idx;
+    this.slides[idx].scrollIntoView({ behavior: 'smooth' });
+    this.updateProgressBar();
+    this.updateNavDots();
+  }
+
+  /* --- Progress Bar --- */
+  setupProgressBar() {
+    this.progressBar = document.getElementById('progressBar');
+    this.updateProgressBar();
+  }
+
+  updateProgressBar() {
+    const pct = this.total <= 1 ? 100 : (this.current / (this.total - 1)) * 100;
+    if (this.progressBar) this.progressBar.style.width = pct + '%';
+  }
+
+  /* --- Navigation Dots --- */
+  setupNavDots() {
+    const nav = document.getElementById('navDots');
+    if (!nav) return;
+    this.dots = this.slides.map((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `Aller au slide ${i + 1}`);
+      dot.addEventListener('click', () => this.goTo(i));
+      nav.appendChild(dot);
+      return dot;
+    });
+  }
+
+  updateNavDots() {
+    if (!this.dots) return;
+    this.dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === this.current);
+    });
+  }
+}
+
+/* ===========================================
+   INLINE EDITOR
+   =========================================== */
+class InlineEditor {
+  constructor() {
+    this.isActive = false;
+    this.storageKey = 'traverser-blocage-presentation';
+    this.editableSelector = 'h1, h2, p, .eyebrow, .card-title, .card-body, .card-examples, .tag, .concept-text, .concept-label, .step-title, .step-desc, .signal-col-title, .signal-item, .dissonance-title, .dissonance-desc, .dissonance-marker, .moment-time, .moment-action, .moment-desc, .s7-exercise-label, .s7-instruction, .s7-sub, .s2-note, .s2-quote, .s9-body, .s10-closing, .step-num, .card-icon, .centered-body, .protocol-title, .s2-list li';
+
+    this.setupToggle();
+    this.setupHotzone();
+    this.setupSave();
+    this.loadFromStorage();
+  }
+
+  setupToggle() {
+    const btn = document.getElementById('editToggle');
+    if (!btn) return;
+    btn.addEventListener('click', () => this.toggleEditMode());
+  }
+
+  setupHotzone() {
+    const hotzone = document.getElementById('editHotzone');
+    const toggle = document.getElementById('editToggle');
+    if (!hotzone || !toggle) return;
+
+    let hideTimeout = null;
+
+    const showBtn = () => {
+      clearTimeout(hideTimeout);
+      toggle.classList.add('show');
+    };
+
+    const scheduleHide = () => {
+      hideTimeout = setTimeout(() => {
+        if (!this.isActive) toggle.classList.remove('show');
+      }, 400);
+    };
+
+    hotzone.addEventListener('mouseenter', showBtn);
+    hotzone.addEventListener('mouseleave', scheduleHide);
+    hotzone.addEventListener('click', () => this.toggleEditMode());
+    toggle.addEventListener('mouseenter', showBtn);
+    toggle.addEventListener('mouseleave', scheduleHide);
+  }
+
+  setupSave() {
+    const btn = document.getElementById('editSave');
+    if (!btn) return;
+    btn.addEventListener('click', () => this.exportHTML());
+  }
+
+  toggleEditMode() {
+    this.isActive ? this.exitEditMode() : this.enterEditMode();
+  }
+
+  enterEditMode() {
+    this.isActive = true;
+    document.body.classList.add('editing');
+
+    const toggle = document.getElementById('editToggle');
+    if (toggle) {
+      toggle.classList.add('active');
+      toggle.classList.remove('show');
+      toggle.textContent = 'Fin d\'édition';
+    }
+
+    document.querySelectorAll(this.editableSelector).forEach(el => {
+      el.setAttribute('contenteditable', 'true');
+      el.addEventListener('input', () => this.saveToStorage(), { passive: true });
+    });
+  }
+
+  exitEditMode() {
+    this.isActive = false;
+    document.body.classList.remove('editing');
+
+    const toggle = document.getElementById('editToggle');
+    if (toggle) {
+      toggle.classList.remove('active', 'show');
+      toggle.textContent = 'Éditer';
+    }
+
+    document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+      el.setAttribute('contenteditable', 'false');
+    });
+
+    this.saveToStorage();
+  }
+
+  saveToStorage() {
+    try {
+      const data = {};
+      document.querySelectorAll(this.editableSelector).forEach((el, i) => {
+        data[i] = el.innerHTML;
+      });
+      localStorage.setItem(this.storageKey, JSON.stringify(data));
+    } catch(e) {}
+  }
+
+  loadFromStorage() {
+    try {
+      const raw = localStorage.getItem(this.storageKey);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      document.querySelectorAll(this.editableSelector).forEach((el, i) => {
+        if (data[i] !== undefined) el.innerHTML = data[i];
+      });
+    } catch(e) {}
+  }
+
+  exportHTML() {
+    try {
+      // Temporarily make all editable false for clean export
+      const editables = document.querySelectorAll('[contenteditable]');
+      editables.forEach(el => el.setAttribute('contenteditable', 'false'));
+
+      const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+      editables.forEach(el => {
+        if (this.isActive) el.setAttribute('contenteditable', 'true');
+        else el.setAttribute('contenteditable', 'false');
+      });
+
+      const blob = new Blob([html], { type: 'text/html; charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Traverser un blocage — Atelier Play&Go.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch(e) {
+      alert('Export disponible uniquement via un navigateur récent.');
+    }
+  }
+}
+
+/* ===========================================
+   INIT
+   =========================================== */
+const presentation = new SlidePresentation();
+const editor = new InlineEditor();
+window.editor = editor;
+</script>
+</body>
+</html>
