@@ -21,7 +21,7 @@ body {
   height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
-  background: #0f0f0f;
+  background: #0a2342;
   color: #e8e4df;
 }
 
@@ -38,8 +38,40 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0f0f0f;
+  background: #0a2342;
 }
+
+/* Photo backgrounds with blue-night overlay */
+.slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+.slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10,35,66,0.82), rgba(10,35,66,0.78), rgba(10,35,66,0.86));
+  z-index: 1;
+}
+.slide > * { position: relative; z-index: 2; }
+
+/* Themed backgrounds — Unsplash photos */
+.bg-cosmos::before { background-image: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1920&q=80'); }
+.bg-forest::before { background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80'); }
+.bg-brain::before { background-image: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?w=1920&q=80'); }
+.bg-storm::before { background-image: url('https://images.unsplash.com/photo-1527482937786-6f51008e37d1?w=1920&q=80'); }
+.bg-calm::before { background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80'); }
+.bg-mountain::before { background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80'); }
+.bg-fire::before { background-image: url('https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=1920&q=80'); }
+.bg-light::before { background-image: url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1920&q=80'); }
+.bg-abstract::before { background-image: url('https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=1920&q=80'); }
+.bg-path::before { background-image: url('https://images.unsplash.com/photo-1510784722466-f2aa9c52fff6?w=1920&q=80'); }
+.bg-lion::before { background-image: url('https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=1920&q=80'); }
+.bg-mirror::before { background-image: url('https://images.unsplash.com/photo-1509023464722-18d996393ca8?w=1920&q=80'); }
 
 /* ===========================================
    ORBS — atmospheric depth
@@ -51,11 +83,11 @@ body {
   opacity: 0.18;
   pointer-events: none;
 }
-.orb-1 { width: 50vw; height: 50vw; background: #d4a574; top: -15%; right: -10%; animation: drift 8s ease-in-out infinite alternate; }
-.orb-2 { width: 35vw; height: 35vw; background: #e8b4b8; bottom: -10%; left: -5%; animation: drift 10s 2s ease-in-out infinite alternate-reverse; }
-.orb-3 { width: 25vw; height: 25vw; background: #c9b896; top: 40%; left: 30%; animation: drift 12s 1s ease-in-out infinite alternate; }
-.orb-alt1 { background: #c9b896; }
-.orb-alt2 { background: #d4a574; }
+.orb-1 { width: 50vw; height: 50vw; background: #f4c430; top: -15%; right: -10%; animation: drift 8s ease-in-out infinite alternate; }
+.orb-2 { width: 35vw; height: 35vw; background: #f4743b; bottom: -10%; left: -5%; animation: drift 10s 2s ease-in-out infinite alternate-reverse; }
+.orb-3 { width: 25vw; height: 25vw; background: #6aad5a; top: 40%; left: 30%; animation: drift 12s 1s ease-in-out infinite alternate; }
+.orb-alt1 { background: #6aad5a; }
+.orb-alt2 { background: #f4743b; }
 
 @keyframes drift {
   from { transform: translate(0, 0) scale(1); }
@@ -70,7 +102,7 @@ body {
   left: clamp(2.5rem, 6vw, 5rem);
   top: 20%; bottom: 20%;
   width: 1px;
-  background: linear-gradient(to bottom, transparent, #d4a574 40%, #d4a574 60%, transparent);
+  background: linear-gradient(to bottom, transparent, #f4c430 40%, #f4c430 60%, transparent);
   opacity: 0;
   transition: opacity 1.2s 0.8s ease;
 }
@@ -123,7 +155,7 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.6rem, 0.9vw, 0.78rem);
   font-weight: 300;
-  color: #d4a574;
+  color: #f4c430;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   margin-bottom: clamp(1rem, 3vh, 2rem);
@@ -132,24 +164,24 @@ body {
 .rule {
   width: clamp(40px, 6vw, 80px);
   height: 1px;
-  background: linear-gradient(to right, transparent, #d4a574, transparent);
+  background: linear-gradient(to right, transparent, #f4c430, transparent);
   margin: clamp(1.5rem, 4vh, 3rem) auto;
 }
 
 .rule-left {
   width: clamp(40px, 6vw, 80px);
   height: 1px;
-  background: linear-gradient(to right, #d4a574, transparent);
+  background: linear-gradient(to right, #f4c430, transparent);
   margin: clamp(1rem, 2.5vh, 2rem) 0;
 }
 
 .tag {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.55rem, 0.8vw, 0.68rem);
-  color: rgba(212,165,116,0.6);
+  color: rgba(244,196,48,0.6);
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  border: 1px solid rgba(212,165,116,0.2);
+  border: 1px solid rgba(244,196,48,0.2);
   padding: 0.35em 1em;
   border-radius: 2px;
 }
@@ -173,13 +205,13 @@ body {
   letter-spacing: -0.01em;
   margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
 }
-.s1-h1 em { font-style: italic; color: #d4a574; }
+.s1-h1 em { font-style: italic; color: #f4c430; }
 
 .s1-subtitle {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.8rem, 1.3vw, 1rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.75;
   max-width: 48ch;
   margin: 0 auto;
@@ -213,13 +245,13 @@ body {
   line-height: 1.3;
   margin-bottom: clamp(1.5rem, 4vh, 3rem);
 }
-.s2-quote em { font-style: normal; color: #d4a574; }
+.s2-quote em { font-style: normal; color: #f4c430; }
 
 .s2-note {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.7rem, 1.1vw, 0.88rem);
   font-weight: 300;
-  color: rgba(154,149,144,0.7);
+  color: rgba(232,228,223,0.7);
   letter-spacing: 0.15em;
 }
 
@@ -237,7 +269,7 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.72rem, 1.1vw, 0.9rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.5;
   display: flex;
   gap: 0.75rem;
@@ -246,7 +278,7 @@ body {
 
 .s2-list li::before {
   content: '—';
-  color: rgba(212,165,116,0.4);
+  color: rgba(244,196,48,0.4);
   flex-shrink: 0;
 }
 
@@ -278,7 +310,7 @@ body {
   line-height: 1.05;
   margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
 }
-.s3-big em { font-style: italic; color: #d4a574; }
+.s3-big em { font-style: italic; color: #f4c430; }
 
 .s3-h2 {
   font-family: 'Cormorant', serif;
@@ -288,29 +320,29 @@ body {
   line-height: 1.1;
   margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
 }
-.s3-h2 em { font-style: italic; color: #d4a574; }
+.s3-h2 em { font-style: italic; color: #f4c430; }
 
 .s3-body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.9rem, 1.4vw, 1.1rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.75;
 }
 .s3-body strong { color: #e8e4df; font-weight: 400; }
 
 .concept-box {
-  border: 1px solid rgba(212,165,116,0.2);
+  border: 1px solid rgba(244,196,48,0.2);
   border-radius: 4px;
   padding: clamp(1.25rem, 3vw, 2rem);
-  background: rgba(212,165,116,0.04);
+  background: rgba(244,196,48,0.04);
   margin-top: clamp(1rem, 2.5vh, 2rem);
 }
 
 .concept-label {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.72rem, 1vw, 0.85rem);
-  color: rgba(212,165,116,0.5);
+  color: rgba(244,196,48,0.5);
   letter-spacing: 0.25em;
   text-transform: uppercase;
   margin-bottom: 0.6rem;
@@ -346,7 +378,7 @@ body {
   color: #e8e4df;
   line-height: 1.1;
 }
-.s4-h2 em { font-style: italic; color: #d4a574; }
+.s4-h2 em { font-style: italic; color: #f4c430; }
 
 .cards-grid {
   display: grid;
@@ -361,11 +393,11 @@ body {
 }
 
 .card {
-  border: 1px solid rgba(212,165,116,0.15);
+  border: 1px solid rgba(244,196,48,0.15);
   border-radius: 4px;
   padding: clamp(1rem, 2.5vw, 1.75rem);
   text-align: left;
-  background: rgba(212,165,116,0.03);
+  background: rgba(244,196,48,0.03);
   display: flex;
   flex-direction: column;
 }
@@ -374,7 +406,7 @@ body {
   font-family: 'Cormorant', serif;
   font-size: clamp(1.25rem, 2.5vw, 2rem);
   font-style: italic;
-  color: #d4a574;
+  color: #f4c430;
   margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
 }
 
@@ -392,7 +424,7 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.85rem, 1.2vw, 1rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.65;
   flex: 1;
 }
@@ -401,7 +433,7 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.58rem, 0.85vw, 0.72rem);
   font-weight: 300;
-  color: rgba(212,165,116,0.5);
+  color: rgba(244,196,48,0.5);
   line-height: 1.6;
   margin-top: clamp(0.5rem, 1.5vh, 0.85rem);
   font-style: italic;
@@ -425,13 +457,13 @@ body {
   line-height: 1.1;
   margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
 }
-.s5-h2 em { font-style: italic; color: #d4a574; }
+.s5-h2 em { font-style: italic; color: #f4c430; }
 
 .s5-intro {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.9rem, 1.4vw, 1.1rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.7;
   max-width: 52ch;
   margin-bottom: clamp(1.5rem, 3.5vh, 2.5rem);
@@ -454,7 +486,7 @@ body {
   font-family: 'Cormorant', serif;
   font-size: clamp(1rem, 1.8vw, 1.4rem);
   font-style: italic;
-  color: rgba(212,165,116,0.5);
+  color: rgba(244,196,48,0.5);
   flex-shrink: 0;
   line-height: 1.2;
   min-width: 1.2rem;
@@ -478,7 +510,7 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.85rem, 1.2vw, 1rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.6;
 }
 
@@ -499,7 +531,7 @@ body {
   color: #e8e4df;
   line-height: 1.1;
 }
-.s6-h2 em { font-style: italic; color: #d4a574; }
+.s6-h2 em { font-style: italic; color: #f4c430; }
 
 .steps {
   list-style: none;
@@ -520,7 +552,7 @@ body {
   font-family: 'Cormorant', serif;
   font-size: clamp(1.25rem, 2.5vw, 2rem);
   font-style: italic;
-  color: #d4a574;
+  color: #f4c430;
   line-height: 1;
   padding-top: 0.1em;
 }
@@ -539,7 +571,7 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.85rem, 1.2vw, 1rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.6;
 }
 
@@ -557,7 +589,7 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.55rem, 0.85vw, 0.72rem);
   font-weight: 300;
-  color: rgba(212,165,116,0.5);
+  color: rgba(244,196,48,0.5);
   letter-spacing: 0.4em;
   text-transform: uppercase;
   margin-bottom: clamp(1.5rem, 4vh, 3rem);
@@ -573,12 +605,12 @@ body {
   max-width: 28ch;
   margin: 0 auto;
 }
-.s7-instruction em { font-style: normal; color: #d4a574; }
+.s7-instruction em { font-style: normal; color: #f4c430; }
 
 .s7-divider {
   width: 1px;
   height: clamp(2rem, 5vh, 4rem);
-  background: linear-gradient(to bottom, #d4a574, transparent);
+  background: linear-gradient(to bottom, #f4c430, transparent);
   margin: clamp(1.5rem, 4vh, 3rem) auto;
 }
 
@@ -586,7 +618,7 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.7rem, 1.1vw, 0.88rem);
   font-weight: 300;
-  color: rgba(154,149,144,0.7);
+  color: rgba(232,228,223,0.7);
   line-height: 1.7;
   max-width: 44ch;
   margin: 0 auto;
@@ -614,7 +646,7 @@ body {
   color: #e8e4df;
   line-height: 1.1;
 }
-.s8-h2 em { font-style: italic; color: #d4a574; }
+.s8-h2 em { font-style: italic; color: #f4c430; }
 
 .signal-grid {
   display: grid;
@@ -626,12 +658,12 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.58rem, 0.88vw, 0.72rem);
   font-weight: 300;
-  color: rgba(212,165,116,0.6);
+  color: rgba(244,196,48,0.6);
   letter-spacing: 0.3em;
   text-transform: uppercase;
   margin-bottom: clamp(0.75rem, 2vh, 1.25rem);
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(212,165,116,0.15);
+  border-bottom: 1px solid rgba(244,196,48,0.15);
 }
 
 .signal-list {
@@ -645,7 +677,7 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.85rem, 1.2vw, 1rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.55;
   display: flex;
   gap: 0.75rem;
@@ -654,7 +686,7 @@ body {
 
 .signal-item::before {
   content: '—';
-  color: rgba(212,165,116,0.4);
+  color: rgba(244,196,48,0.4);
   flex-shrink: 0;
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.75em;
@@ -688,13 +720,13 @@ body {
   line-height: 1.1;
   margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
 }
-.s9-h2 em { font-style: italic; color: #d4a574; }
+.s9-h2 em { font-style: italic; color: #f4c430; }
 
 .s9-body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.75rem, 1.2vw, 0.92rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.75;
 }
 .s9-body strong { color: #e8e4df; font-weight: 400; }
@@ -712,7 +744,7 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.55rem, 0.82vw, 0.68rem);
   font-weight: 300;
-  color: rgba(212,165,116,0.55);
+  color: rgba(244,196,48,0.55);
   letter-spacing: 0.25em;
   text-transform: uppercase;
 }
@@ -729,14 +761,14 @@ body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.62rem, 0.95vw, 0.78rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.6;
 }
 
 .moment-divider {
   width: 100%;
   height: 1px;
-  background: rgba(212,165,116,0.1);
+  background: rgba(244,196,48,0.1);
   margin-top: clamp(0.85rem, 2.2vh, 1.4rem);
 }
 
@@ -759,13 +791,13 @@ body {
   letter-spacing: -0.01em;
   margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
 }
-.s10-h1 em { font-style: italic; color: #d4a574; }
+.s10-h1 em { font-style: italic; color: #f4c430; }
 
 .s10-closing {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.8rem, 1.3vw, 1rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.8;
   max-width: 46ch;
   margin: 0 auto;
@@ -798,19 +830,19 @@ body {
   line-height: 1.1;
   margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
 }
-.centered-h2 em { font-style: italic; color: #d4a574; }
+.centered-h2 em { font-style: italic; color: #f4c430; }
 
 .centered-body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.75rem, 1.2vw, 0.95rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.75;
   max-width: 52ch;
   margin: 0 auto;
 }
 .centered-body strong { color: #e8e4df; font-weight: 400; }
-.centered-body em { color: #d4a574; font-style: italic; }
+.centered-body em { color: #f4c430; font-style: italic; }
 
 /* ===========================================
    SVG ILLUSTRATIONS
@@ -836,7 +868,7 @@ body {
   bottom: 0; left: 0;
   width: 0%;
   height: 2px;
-  background: linear-gradient(to right, #d4a574, #e8b4b8);
+  background: linear-gradient(to right, #f4c430, #f4743b);
   z-index: 100;
   transition: width 0.3s ease;
   pointer-events: none;
@@ -860,17 +892,17 @@ body {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: rgba(212,165,116,0.25);
+  background: rgba(244,196,48,0.25);
   cursor: pointer;
   transition: background 0.3s ease, transform 0.3s ease;
   border: none;
   padding: 0;
 }
 .nav-dot.active {
-  background: #d4a574;
+  background: #f4c430;
   transform: scale(1.6);
 }
-.nav-dot:hover { background: rgba(212,165,116,0.6); }
+.nav-dot:hover { background: rgba(244,196,48,0.6); }
 
 /* ===========================================
    INLINE EDITING
@@ -885,7 +917,7 @@ body {
 .edit-toggle {
   position: fixed;
   top: 16px; left: 16px;
-  background: rgba(212,165,116,0.9);
+  background: rgba(244,196,48,0.9);
   color: #0f0f0f;
   border: none;
   border-radius: 3px;
@@ -903,12 +935,12 @@ body {
 }
 .edit-toggle.show,
 .edit-toggle.active { opacity: 1; pointer-events: auto; }
-.edit-toggle.active { background: rgba(232,180,184,0.9); }
+.edit-toggle.active { background: rgba(232,92,74,0.9); }
 
 .edit-save {
   position: fixed;
   bottom: 24px; right: 24px;
-  background: rgba(212,165,116,0.9);
+  background: rgba(244,196,48,0.9);
   color: #0f0f0f;
   border: none;
   border-radius: 3px;
@@ -926,26 +958,26 @@ body {
 body.editing .edit-save { display: block; }
 
 body.editing [contenteditable] {
-  outline: 1px dashed rgba(212,165,116,0.35);
+  outline: 1px dashed rgba(244,196,48,0.35);
   outline-offset: 3px;
   cursor: text;
   border-radius: 2px;
   min-width: 1em;
 }
 body.editing [contenteditable]:focus {
-  outline: 1px solid rgba(212,165,116,0.75);
-  background: rgba(212,165,116,0.04);
+  outline: 1px solid rgba(244,196,48,0.75);
+  background: rgba(244,196,48,0.04);
 }
 
 /* ===========================================
    CARD COLOR ACCENTS
    =========================================== */
-.card-green { border-color: rgba(120,180,120,0.3); background: rgba(120,180,120,0.04); }
-.card-green .card-icon { color: #8bc08b; }
-.card-orange { border-color: rgba(212,165,116,0.3); background: rgba(212,165,116,0.04); }
-.card-orange .card-icon { color: #d4a574; }
-.card-red { border-color: rgba(232,180,184,0.3); background: rgba(232,180,184,0.04); }
-.card-red .card-icon { color: #e8b4b8; }
+.card-green { border-color: rgba(106,173,90,0.3); background: rgba(106,173,90,0.04); }
+.card-green .card-icon { color: #6aad5a; }
+.card-orange { border-color: rgba(244,116,59,0.3); background: rgba(244,116,59,0.04); }
+.card-orange .card-icon { color: #f4743b; }
+.card-red { border-color: rgba(232,92,74,0.3); background: rgba(232,92,74,0.04); }
+.card-red .card-icon { color: #e85c4a; }
 
 /* ===========================================
    SIGNAL GRID 3-COL + PROTOCOL BOX
@@ -958,10 +990,10 @@ body.editing [contenteditable]:focus {
 }
 
 .protocol-box {
-  border: 1px solid rgba(212,165,116,0.2);
+  border: 1px solid rgba(244,196,48,0.2);
   border-radius: 4px;
   padding: clamp(1.25rem, 3vw, 2rem);
-  background: rgba(212,165,116,0.04);
+  background: rgba(244,196,48,0.04);
   margin-top: clamp(1rem, 2vh, 1.5rem);
 }
 
@@ -969,7 +1001,7 @@ body.editing [contenteditable]:focus {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.58rem, 0.88vw, 0.72rem);
   font-weight: 300;
-  color: rgba(212,165,116,0.6);
+  color: rgba(244,196,48,0.6);
   letter-spacing: 0.3em;
   text-transform: uppercase;
   margin-bottom: clamp(0.75rem, 1.5vh, 1rem);
@@ -986,7 +1018,7 @@ body.editing [contenteditable]:focus {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: clamp(0.68rem, 1vw, 0.85rem);
   font-weight: 300;
-  color: #9a9590;
+  color: #e8e4df;
   line-height: 1.55;
   display: flex;
   gap: 0.75rem;
@@ -995,7 +1027,7 @@ body.editing [contenteditable]:focus {
 .protocol-steps li strong { color: #e8e4df; font-weight: 400; }
 
 .protocol-steps .pnum {
-  color: #d4a574;
+  color: #f4c430;
   font-family: 'Cormorant', serif;
   font-style: italic;
   flex-shrink: 0;
@@ -1036,7 +1068,7 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 01 — TITRE
      ============================================ -->
-<section class="slide" id="slide-1" aria-label="Slide 1 sur 20">
+<section class="slide bg-cosmos" id="slide-1" aria-label="Slide 1 sur 20">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
@@ -1060,9 +1092,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 02 — LEUR QUOTIDIEN
      ============================================ -->
-<section class="slide" id="slide-2" aria-label="Slide 2 sur 20">
-  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-5%;"></div>
-  <div class="orb orb-2" style="background:#c9b896; bottom:-10%; left:-5%;"></div>
+<section class="slide bg-abstract" id="slide-2" aria-label="Slide 2 sur 20">
+  <div class="orb orb-1" style="background:#e85c4a; top:-20%; right:-5%;"></div>
+  <div class="orb orb-2" style="background:#6aad5a; bottom:-10%; left:-5%;"></div>
   <div class="accent-line"></div>
   <div class="slide-number">02 / 20</div>
 
@@ -1113,10 +1145,10 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 03 — LE MENSONGE
      ============================================ -->
-<section class="slide" id="slide-3" aria-label="Slide 3 sur 20">
-  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-10%; opacity:0.15;"></div>
-  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:-5%; opacity:0.13;"></div>
-  <div class="orb orb-3" style="background:#c9b896; top:35%; left:25%;"></div>
+<section class="slide bg-storm" id="slide-3" aria-label="Slide 3 sur 20">
+  <div class="orb orb-1" style="background:#e85c4a; top:-20%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#f4c430; bottom:-15%; left:-5%; opacity:0.13;"></div>
+  <div class="orb orb-3" style="background:#6aad5a; top:35%; left:25%;"></div>
   <div class="slide-number">03 / 20</div>
 
   <div class="s2-content">
@@ -1139,9 +1171,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 04 — CE QU'ON VA FAIRE
      ============================================ -->
-<section class="slide" id="slide-4" aria-label="Slide 4 sur 20">
-  <div class="orb orb-1" style="background:#d4a574; top:-10%; right:-5%;"></div>
-  <div class="orb orb-3" style="background:#c9b896; bottom:20%; left:5%; opacity:0.14;"></div>
+<section class="slide bg-brain" id="slide-4" aria-label="Slide 4 sur 20">
+  <div class="orb orb-1" style="background:#f4c430; top:-10%; right:-5%;"></div>
+  <div class="orb orb-3" style="background:#6aad5a; bottom:20%; left:5%; opacity:0.14;"></div>
   <div class="slide-number">04 / 20</div>
 
   <div class="s6-content">
@@ -1176,9 +1208,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 05 — LA MAISON À TROIS ÉTAGES
      ============================================ -->
-<section class="slide" id="slide-5" aria-label="Slide 5 sur 20">
-  <div class="orb orb-1" style="background:#c9b896; top:10%; right:-15%; width:40vw; height:40vw;"></div>
-  <div class="orb orb-2" style="background:#e8b4b8; bottom:-10%; left:-5%;"></div>
+<section class="slide bg-brain" id="slide-5" aria-label="Slide 5 sur 20">
+  <div class="orb orb-1" style="background:#6aad5a; top:10%; right:-15%; width:40vw; height:40vw;"></div>
+  <div class="orb orb-2" style="background:#e85c4a; bottom:-10%; left:-5%;"></div>
   <div class="accent-line"></div>
   <div class="slide-number">05 / 20</div>
 
@@ -1192,23 +1224,23 @@ body.editing [contenteditable]:focus {
         <div class="svg-illustration reveal">
           <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Roof -->
-            <path d="M110 20 L30 80 L190 80 Z" stroke="#d4a574" stroke-width="1.5" fill="rgba(232,228,223,0.04)"/>
+            <path d="M110 20 L30 80 L190 80 Z" stroke="#f4c430" stroke-width="1.5" fill="rgba(232,228,223,0.04)"/>
             <!-- Top floor (Stratège) -->
-            <rect x="40" y="80" width="140" height="55" stroke="#d4a574" stroke-width="1" fill="rgba(232,228,223,0.06)"/>
-            <text x="110" y="104" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#d4a574" letter-spacing="0.1em">STRATÈGE</text>
-            <text x="110" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="rgba(212,165,116,0.55)">cortex préfrontal</text>
+            <rect x="40" y="80" width="140" height="55" stroke="#f4c430" stroke-width="1" fill="rgba(232,228,223,0.06)"/>
+            <text x="110" y="104" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#f4c430" letter-spacing="0.1em">STRATÈGE</text>
+            <text x="110" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(244,196,48,0.8)">cortex préfrontal</text>
             <!-- Middle floor (Radar) -->
-            <rect x="40" y="135" width="140" height="55" stroke="#e8b4b8" stroke-width="1" fill="rgba(232,228,223,0.06)"/>
-            <text x="110" y="159" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#e8b4b8" letter-spacing="0.1em">RADAR</text>
-            <text x="110" y="175" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="rgba(232,180,184,0.55)">cerveau émotionnel</text>
+            <rect x="40" y="135" width="140" height="55" stroke="#e85c4a" stroke-width="1" fill="rgba(232,228,223,0.06)"/>
+            <text x="110" y="159" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#e85c4a" letter-spacing="0.1em">RADAR</text>
+            <text x="110" y="175" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,92,74,0.8)">cerveau émotionnel</text>
             <!-- Ground floor (Gardien) -->
-            <rect x="40" y="190" width="140" height="55" stroke="#c9b896" stroke-width="1" fill="rgba(232,228,223,0.06)"/>
-            <text x="110" y="214" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#c9b896" letter-spacing="0.1em">GARDIEN</text>
-            <text x="110" y="230" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="rgba(201,184,150,0.55)">cerveau reptilien</text>
+            <rect x="40" y="190" width="140" height="55" stroke="#6aad5a" stroke-width="1" fill="rgba(232,228,223,0.06)"/>
+            <text x="110" y="214" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#6aad5a" letter-spacing="0.1em">GARDIEN</text>
+            <text x="110" y="230" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(106,173,90,0.8)">cerveau reptilien</text>
             <!-- Staircase lines -->
             <line x1="70" y1="245" x2="70" y2="80" stroke="rgba(232,228,223,0.15)" stroke-width="1" stroke-dasharray="4 3"/>
             <!-- Foundation -->
-            <line x1="30" y1="245" x2="190" y2="245" stroke="#d4a574" stroke-width="1.5"/>
+            <line x1="30" y1="245" x2="190" y2="245" stroke="#f4c430" stroke-width="1.5"/>
           </svg>
         </div>
       </div>
@@ -1233,9 +1265,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 06 — QUAND LE GARDIEN COUPE L'ESCALIER
      ============================================ -->
-<section class="slide" id="slide-6" aria-label="Slide 6 sur 20">
-  <div class="orb orb-1" style="background:#e8b4b8; top:-5%; right:5%; opacity:0.13;"></div>
-  <div class="orb orb-2" style="background:#d4a574; bottom:-10%; left:-5%;"></div>
+<section class="slide bg-storm" id="slide-6" aria-label="Slide 6 sur 20">
+  <div class="orb orb-1" style="background:#e85c4a; top:-5%; right:5%; opacity:0.13;"></div>
+  <div class="orb orb-2" style="background:#f4c430; bottom:-10%; left:-5%;"></div>
   <div class="accent-line"></div>
   <div class="slide-number">06 / 20</div>
 
@@ -1249,29 +1281,29 @@ body.editing [contenteditable]:focus {
         <div class="svg-illustration reveal">
           <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Roof — faded -->
-            <path d="M110 20 L30 80 L190 80 Z" stroke="rgba(212,165,116,0.25)" stroke-width="1.5" fill="rgba(232,228,223,0.02)" stroke-dasharray="4 4"/>
+            <path d="M110 20 L30 80 L190 80 Z" stroke="rgba(244,196,48,0.25)" stroke-width="1.5" fill="rgba(232,228,223,0.02)" stroke-dasharray="4 4"/>
             <!-- Top floor (Stratège) — faded, shifted up -->
-            <rect x="40" y="70" width="140" height="55" stroke="rgba(212,165,116,0.2)" stroke-width="1" fill="rgba(232,228,223,0.02)" stroke-dasharray="4 4"/>
-            <text x="110" y="102" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="rgba(212,165,116,0.25)" letter-spacing="0.1em">STRATÈGE</text>
-            <text x="110" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-size="7" fill="rgba(232,228,223,0.2)">HORS LIGNE</text>
+            <rect x="40" y="70" width="140" height="55" stroke="rgba(244,196,48,0.2)" stroke-width="1" fill="rgba(232,228,223,0.02)" stroke-dasharray="4 4"/>
+            <text x="110" y="102" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="rgba(244,196,48,0.25)" letter-spacing="0.1em">STRATÈGE</text>
+            <text x="110" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,228,223,0.5)">HORS LIGNE</text>
             <!-- Cut in staircase — zigzag break -->
-            <line x1="55" y1="130" x2="85" y2="130" stroke="#e8b4b8" stroke-width="2"/>
-            <path d="M60 126 L65 134 L70 126 L75 134 L80 126" stroke="#e8b4b8" stroke-width="1.5" fill="none"/>
+            <line x1="55" y1="130" x2="85" y2="130" stroke="#e85c4a" stroke-width="2"/>
+            <path d="M60 126 L65 134 L70 126 L75 134 L80 126" stroke="#e85c4a" stroke-width="1.5" fill="none"/>
             <!-- Middle floor (Radar) — alert -->
-            <rect x="40" y="145" width="140" height="55" stroke="#e8b4b8" stroke-width="1.5" fill="rgba(232,180,184,0.06)"/>
-            <text x="110" y="177" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#e8b4b8" letter-spacing="0.1em">RADAR</text>
+            <rect x="40" y="145" width="140" height="55" stroke="#e85c4a" stroke-width="1.5" fill="rgba(232,92,74,0.06)"/>
+            <text x="110" y="177" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#e85c4a" letter-spacing="0.1em">RADAR</text>
             <!-- Alert signals -->
-            <circle cx="165" cy="160" r="4" fill="#e8b4b8" opacity="0.4"/>
-            <circle cx="175" cy="155" r="3" fill="#e8b4b8" opacity="0.3"/>
-            <circle cx="170" cy="170" r="2.5" fill="#e8b4b8" opacity="0.25"/>
+            <circle cx="165" cy="160" r="4" fill="#e85c4a" opacity="0.4"/>
+            <circle cx="175" cy="155" r="3" fill="#e85c4a" opacity="0.3"/>
+            <circle cx="170" cy="170" r="2.5" fill="#e85c4a" opacity="0.25"/>
             <!-- Ground floor (Gardien) — active -->
-            <rect x="40" y="200" width="140" height="55" stroke="#c9b896" stroke-width="1.5" fill="rgba(201,184,150,0.08)"/>
-            <text x="110" y="232" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#c9b896" letter-spacing="0.1em">GARDIEN</text>
+            <rect x="40" y="200" width="140" height="55" stroke="#6aad5a" stroke-width="1.5" fill="rgba(106,173,90,0.08)"/>
+            <text x="110" y="232" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#6aad5a" letter-spacing="0.1em">GARDIEN</text>
             <!-- Staircase — broken -->
             <line x1="70" y1="255" x2="70" y2="200" stroke="rgba(232,228,223,0.15)" stroke-width="1" stroke-dasharray="4 3"/>
             <line x1="70" y1="145" x2="70" y2="200" stroke="rgba(232,228,223,0.15)" stroke-width="1" stroke-dasharray="4 3"/>
             <!-- Foundation -->
-            <line x1="30" y1="255" x2="190" y2="255" stroke="#c9b896" stroke-width="1.5"/>
+            <line x1="30" y1="255" x2="190" y2="255" stroke="#6aad5a" stroke-width="1.5"/>
           </svg>
         </div>
       </div>
@@ -1294,9 +1326,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 07 — LE FEU TRICOLORE INTÉRIEUR
      ============================================ -->
-<section class="slide" id="slide-7" aria-label="Slide 7 sur 20">
-  <div class="orb orb-1" style="background:#d4a574; top:-10%; left:-10%; right:auto;"></div>
-  <div class="orb orb-3" style="background:#e8b4b8; bottom:5%; right:10%;"></div>
+<section class="slide bg-fire" id="slide-7" aria-label="Slide 7 sur 20">
+  <div class="orb orb-1" style="background:#f4c430; top:-10%; left:-10%; right:auto;"></div>
+  <div class="orb orb-3" style="background:#e85c4a; bottom:5%; right:10%;"></div>
   <div class="slide-number">07 / 20</div>
 
   <div class="s4-content">
@@ -1308,14 +1340,14 @@ body.editing [contenteditable]:focus {
         <svg viewBox="0 0 60 140" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width:50px;">
           <rect x="10" y="5" width="40" height="120" rx="8" stroke="rgba(232,228,223,0.2)" stroke-width="1" fill="rgba(232,228,223,0.03)"/>
           <!-- Green -->
-          <circle cx="30" cy="30" r="12" stroke="#8bc08b" stroke-width="1.5" fill="rgba(120,180,120,0.15)"/>
-          <circle cx="30" cy="30" r="5" fill="#8bc08b" opacity="0.6"/>
+          <circle cx="30" cy="30" r="12" stroke="#6aad5a" stroke-width="1.5" fill="rgba(106,173,90,0.15)"/>
+          <circle cx="30" cy="30" r="5" fill="#6aad5a" opacity="0.6"/>
           <!-- Orange -->
-          <circle cx="30" cy="65" r="12" stroke="#d4a574" stroke-width="1.5" fill="rgba(212,165,116,0.15)"/>
-          <circle cx="30" cy="65" r="5" fill="#d4a574" opacity="0.6"/>
+          <circle cx="30" cy="65" r="12" stroke="#f4c430" stroke-width="1.5" fill="rgba(244,196,48,0.15)"/>
+          <circle cx="30" cy="65" r="5" fill="#f4c430" opacity="0.6"/>
           <!-- Red -->
-          <circle cx="30" cy="100" r="12" stroke="#e8b4b8" stroke-width="1.5" fill="rgba(232,180,184,0.15)"/>
-          <circle cx="30" cy="100" r="5" fill="#e8b4b8" opacity="0.6"/>
+          <circle cx="30" cy="100" r="12" stroke="#e85c4a" stroke-width="1.5" fill="rgba(232,92,74,0.15)"/>
+          <circle cx="30" cy="100" r="5" fill="#e85c4a" opacity="0.6"/>
           <!-- Post -->
           <line x1="30" y1="125" x2="30" y2="138" stroke="rgba(232,228,223,0.2)" stroke-width="1.5"/>
         </svg>
@@ -1344,9 +1376,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 08 — POURQUOI ÇA SE DÉCLENCHE
      ============================================ -->
-<section class="slide" id="slide-8" aria-label="Slide 8 sur 20">
-  <div class="orb orb-1" style="background:#e8b4b8; top:-5%; right:5%; opacity:0.13;"></div>
-  <div class="orb orb-2" style="background:#c9b896; bottom:-10%; left:-5%;"></div>
+<section class="slide bg-storm" id="slide-8" aria-label="Slide 8 sur 20">
+  <div class="orb orb-1" style="background:#e85c4a; top:-5%; right:5%; opacity:0.13;"></div>
+  <div class="orb orb-2" style="background:#6aad5a; bottom:-10%; left:-5%;"></div>
   <div class="accent-line"></div>
   <div class="slide-number">08 / 20</div>
 
@@ -1383,9 +1415,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 8b — PONT : DU CERVEAU AU CORPS
      ============================================ -->
-<section class="slide" id="slide-8b" aria-label="Pont cerveau-corps">
-  <div class="orb orb-1" style="background:#c9b896; top:-15%; right:-10%; opacity:0.15;"></div>
-  <div class="orb orb-2" style="background:#e8b4b8; bottom:-10%; left:5%; opacity:0.12;"></div>
+<section class="slide bg-abstract" id="slide-8b" aria-label="Pont cerveau-corps">
+  <div class="orb orb-1" style="background:#6aad5a; top:-15%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#e85c4a; bottom:-10%; left:5%; opacity:0.12;"></div>
   <div class="slide-number">8b</div>
 
   <div class="s2-content">
@@ -1403,9 +1435,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 09 — LA GAZELLE ET LE RESSORT
      ============================================ -->
-<section class="slide" id="slide-9" aria-label="Slide 9">
-  <div class="orb orb-1" style="background:#d4a574; top:-15%; right:-10%;"></div>
-  <div class="orb orb-2" style="background:#c9b896; bottom:-5%; left:-5%; opacity:0.14;"></div>
+<section class="slide bg-lion" id="slide-9" aria-label="Slide 9">
+  <div class="orb orb-1" style="background:#f4c430; top:-15%; right:-10%;"></div>
+  <div class="orb orb-2" style="background:#6aad5a; bottom:-5%; left:-5%; opacity:0.14;"></div>
   <div class="accent-line"></div>
   <div class="slide-number">09 / 20</div>
 
@@ -1421,36 +1453,36 @@ body.editing [contenteditable]:focus {
             <!-- Gazelle silhouette -->
             <g transform="translate(10,20)">
               <!-- Body -->
-              <ellipse cx="55" cy="60" rx="35" ry="18" stroke="#d4a574" stroke-width="1.2" fill="rgba(232,228,223,0.04)"/>
+              <ellipse cx="55" cy="60" rx="35" ry="18" stroke="#f4c430" stroke-width="1.2" fill="rgba(232,228,223,0.04)"/>
               <!-- Neck -->
-              <path d="M80 50 Q85 30 78 15" stroke="#d4a574" stroke-width="1.2" fill="none"/>
+              <path d="M80 50 Q85 30 78 15" stroke="#f4c430" stroke-width="1.2" fill="none"/>
               <!-- Head -->
-              <ellipse cx="75" cy="12" rx="8" ry="6" stroke="#d4a574" stroke-width="1" fill="rgba(232,228,223,0.04)"/>
+              <ellipse cx="75" cy="12" rx="8" ry="6" stroke="#f4c430" stroke-width="1" fill="rgba(232,228,223,0.04)"/>
               <!-- Horns -->
-              <path d="M78 7 Q82 -5 80 -10" stroke="#d4a574" stroke-width="0.8" fill="none"/>
-              <path d="M73 8 Q69 -3 72 -10" stroke="#d4a574" stroke-width="0.8" fill="none"/>
+              <path d="M78 7 Q82 -5 80 -10" stroke="#f4c430" stroke-width="0.8" fill="none"/>
+              <path d="M73 8 Q69 -3 72 -10" stroke="#f4c430" stroke-width="0.8" fill="none"/>
               <!-- Legs -->
-              <line x1="35" y1="75" x2="30" y2="105" stroke="#d4a574" stroke-width="1"/>
-              <line x1="45" y1="75" x2="42" y2="105" stroke="#d4a574" stroke-width="1"/>
-              <line x1="65" y1="75" x2="68" y2="105" stroke="#d4a574" stroke-width="1"/>
-              <line x1="75" y1="75" x2="78" y2="105" stroke="#d4a574" stroke-width="1"/>
+              <line x1="35" y1="75" x2="30" y2="105" stroke="#f4c430" stroke-width="1"/>
+              <line x1="45" y1="75" x2="42" y2="105" stroke="#f4c430" stroke-width="1"/>
+              <line x1="65" y1="75" x2="68" y2="105" stroke="#f4c430" stroke-width="1"/>
+              <line x1="75" y1="75" x2="78" y2="105" stroke="#f4c430" stroke-width="1"/>
               <!-- Tremble marks -->
-              <path d="M90 45 L96 43 L92 48 L98 46" stroke="#e8b4b8" stroke-width="0.8" opacity="0.6" fill="none"/>
-              <path d="M92 55 L98 53 L94 58 L100 56" stroke="#e8b4b8" stroke-width="0.8" opacity="0.5" fill="none"/>
-              <path d="M88 65 L94 63 L90 68 L96 66" stroke="#e8b4b8" stroke-width="0.8" opacity="0.4" fill="none"/>
+              <path d="M90 45 L96 43 L92 48 L98 46" stroke="#e85c4a" stroke-width="0.8" opacity="0.6" fill="none"/>
+              <path d="M92 55 L98 53 L94 58 L100 56" stroke="#e85c4a" stroke-width="0.8" opacity="0.5" fill="none"/>
+              <path d="M88 65 L94 63 L90 68 L96 66" stroke="#e85c4a" stroke-width="0.8" opacity="0.4" fill="none"/>
             </g>
             <!-- Divider -->
             <line x1="130" y1="40" x2="130" y2="160" stroke="rgba(232,228,223,0.1)" stroke-width="1"/>
             <!-- Compressed spring -->
             <g transform="translate(160,40)">
               <!-- Spring coils -->
-              <path d="M20 0 Q50 8 20 16 Q-10 24 20 32 Q50 40 20 48 Q-10 56 20 64 Q50 72 20 80 Q-10 88 20 96" stroke="#e8b4b8" stroke-width="1.5" fill="none"/>
+              <path d="M20 0 Q50 8 20 16 Q-10 24 20 32 Q50 40 20 48 Q-10 56 20 64 Q50 72 20 80 Q-10 88 20 96" stroke="#e85c4a" stroke-width="1.5" fill="none"/>
               <!-- Compression arrows -->
-              <path d="M20 -10 L20 0 M15 -5 L20 -10 L25 -5" stroke="#d4a574" stroke-width="1" fill="none"/>
-              <path d="M20 106 L20 96 M15 101 L20 106 L25 101" stroke="#d4a574" stroke-width="1" fill="none"/>
+              <path d="M20 -10 L20 0 M15 -5 L20 -10 L25 -5" stroke="#f4c430" stroke-width="1" fill="none"/>
+              <path d="M20 106 L20 96 M15 101 L20 106 L25 101" stroke="#f4c430" stroke-width="1" fill="none"/>
               <!-- Pressure label -->
-              <text x="55" y="50" font-family="IBM Plex Sans" font-size="7" fill="rgba(232,228,223,0.3)">énergie</text>
-              <text x="55" y="60" font-family="IBM Plex Sans" font-size="7" fill="rgba(232,228,223,0.3)">piégée</text>
+              <text x="55" y="50" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,228,223,0.6)">énergie</text>
+              <text x="55" y="63" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,228,223,0.6)">piégée</text>
             </g>
           </svg>
         </div>
@@ -1474,9 +1506,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 9b — PONT : DU CORPS AUX VOIX
      ============================================ -->
-<section class="slide" id="slide-9b" aria-label="Pont corps-voix">
-  <div class="orb orb-1" style="background:#e8b4b8; top:-10%; right:5%; opacity:0.15;"></div>
-  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:-5%; opacity:0.12;"></div>
+<section class="slide bg-abstract" id="slide-9b" aria-label="Pont corps-voix">
+  <div class="orb orb-1" style="background:#e85c4a; top:-10%; right:5%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#f4c430; bottom:-15%; left:-5%; opacity:0.12;"></div>
   <div class="slide-number">9b</div>
 
   <div class="s2-content">
@@ -1494,9 +1526,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 10 — LES VOIX INTÉRIEURES
      ============================================ -->
-<section class="slide" id="slide-10" aria-label="Slide 10 sur 20">
-  <div class="orb orb-1" style="background:#d4a574; top:-10%; left:-10%; right:auto;"></div>
-  <div class="orb orb-3" style="background:#e8b4b8; bottom:5%; right:10%;"></div>
+<section class="slide bg-mirror" id="slide-10" aria-label="Slide 10 sur 20">
+  <div class="orb orb-1" style="background:#f4c430; top:-10%; left:-10%; right:auto;"></div>
+  <div class="orb orb-3" style="background:#e85c4a; bottom:5%; right:10%;"></div>
   <div class="slide-number">10 / 20</div>
 
   <div class="s4-content">
@@ -1536,9 +1568,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 11 — DEMARTINI : LE PRINCIPE DE POLARITÉ
      ============================================ -->
-<section class="slide" id="slide-11" aria-label="Slide 11">
-  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-5%;"></div>
-  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:10%;"></div>
+<section class="slide bg-mirror" id="slide-11" aria-label="Slide 11">
+  <div class="orb orb-1" style="background:#e85c4a; top:-20%; right:-5%;"></div>
+  <div class="orb orb-2" style="background:#f4c430; bottom:-15%; left:10%;"></div>
   <div class="accent-line"></div>
   <div class="slide-number">11</div>
 
@@ -1572,9 +1604,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 11a — POURQUOI CA PARALYSE (exemple concret)
      ============================================ -->
-<section class="slide" id="slide-11a" aria-label="Slide 11a">
-  <div class="orb orb-1" style="background:#c9b896; top:-10%; right:5%; opacity:0.13;"></div>
-  <div class="orb orb-2" style="background:#e8b4b8; bottom:-10%; left:-5%;"></div>
+<section class="slide bg-storm" id="slide-11a" aria-label="Slide 11a">
+  <div class="orb orb-1" style="background:#6aad5a; top:-10%; right:5%; opacity:0.13;"></div>
+  <div class="orb orb-2" style="background:#e85c4a; bottom:-10%; left:-5%;"></div>
   <div class="slide-number">11a</div>
 
   <div class="centered-content">
@@ -1588,30 +1620,30 @@ body.editing [contenteditable]:focus {
     <div class="svg-illustration reveal" style="margin: 0 auto;">
       <svg viewBox="0 0 520 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width:540px;">
         <!-- LEFT: People Pleaser -->
-        <rect x="0" y="30" width="155" height="80" rx="6" fill="rgba(212,165,116,0.1)" stroke="rgba(212,165,116,0.4)" stroke-width="1.5"/>
-        <text x="77" y="55" text-anchor="middle" font-family="IBM Plex Sans" font-size="15" font-weight="400" fill="#d4a574">People Pleaser</text>
-        <text x="77" y="78" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(212,165,116,0.6)" font-style="italic">« ne dérange pas,</text>
-        <text x="77" y="96" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(212,165,116,0.6)" font-style="italic">sois gentil »</text>
+        <rect x="0" y="30" width="155" height="80" rx="6" fill="rgba(244,196,48,0.1)" stroke="rgba(244,196,48,0.4)" stroke-width="1.5"/>
+        <text x="77" y="55" text-anchor="middle" font-family="IBM Plex Sans" font-size="15" font-weight="400" fill="#f4c430">People Pleaser</text>
+        <text x="77" y="78" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(244,196,48,0.6)" font-style="italic">« ne dérange pas,</text>
+        <text x="77" y="96" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(244,196,48,0.6)" font-style="italic">sois gentil »</text>
 
         <!-- Arrow LEFT — FREINE -->
-        <line x1="155" y1="70" x2="215" y2="70" stroke="#d4a574" stroke-width="2.5"/>
-        <path d="M160 63 L155 70 L160 77" stroke="#d4a574" stroke-width="2.5" fill="none"/>
-        <text x="185" y="58" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#d4a574" letter-spacing="0.15em" font-weight="400">FREINE</text>
+        <line x1="155" y1="70" x2="215" y2="70" stroke="#f4c430" stroke-width="2.5"/>
+        <path d="M160 63 L155 70 L160 77" stroke="#f4c430" stroke-width="2.5" fill="none"/>
+        <text x="185" y="58" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#f4c430" letter-spacing="0.15em" font-weight="400">FREINE</text>
 
         <!-- CENTER: toi -->
         <circle cx="260" cy="70" r="35" stroke="rgba(232,228,223,0.35)" stroke-width="1.5" fill="rgba(232,228,223,0.04)"/>
         <text x="260" y="75" text-anchor="middle" font-family="Cormorant" font-size="22" fill="#e8e4df" font-style="italic">toi</text>
 
         <!-- Arrow RIGHT — POUSSE -->
-        <line x1="305" y1="70" x2="365" y2="70" stroke="#e8b4b8" stroke-width="2.5"/>
-        <path d="M360 63 L365 70 L360 77" stroke="#e8b4b8" stroke-width="2.5" fill="none"/>
-        <text x="335" y="58" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#e8b4b8" letter-spacing="0.15em" font-weight="400">POUSSE</text>
+        <line x1="305" y1="70" x2="365" y2="70" stroke="#f4743b" stroke-width="2.5"/>
+        <path d="M360 63 L365 70 L360 77" stroke="#f4743b" stroke-width="2.5" fill="none"/>
+        <text x="335" y="58" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#f4743b" letter-spacing="0.15em" font-weight="400">POUSSE</text>
 
         <!-- RIGHT: Rebelle -->
-        <rect x="365" y="30" width="155" height="80" rx="6" fill="rgba(232,180,184,0.1)" stroke="rgba(232,180,184,0.4)" stroke-width="1.5"/>
-        <text x="442" y="55" text-anchor="middle" font-family="IBM Plex Sans" font-size="15" font-weight="400" fill="#e8b4b8">Rebelle</text>
-        <text x="442" y="78" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(232,180,184,0.6)" font-style="italic">« fonce, dis-le,</text>
-        <text x="442" y="96" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(232,180,184,0.6)" font-style="italic">ose enfin ! »</text>
+        <rect x="365" y="30" width="155" height="80" rx="6" fill="rgba(244,116,59,0.1)" stroke="rgba(244,116,59,0.4)" stroke-width="1.5"/>
+        <text x="442" y="55" text-anchor="middle" font-family="IBM Plex Sans" font-size="15" font-weight="400" fill="#f4743b">Rebelle</text>
+        <text x="442" y="78" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(244,116,59,0.6)" font-style="italic">« fonce, dis-le,</text>
+        <text x="442" y="96" text-anchor="middle" font-family="Cormorant" font-size="14" fill="rgba(244,116,59,0.6)" font-style="italic">ose enfin ! »</text>
 
         <!-- Bottom: what happens -->
         <line x1="120" y1="135" x2="400" y2="135" stroke="rgba(232,228,223,0.08)" stroke-width="1"/>
@@ -1625,9 +1657,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 11b — LES 3 PAIRES DE POLARITÉS
      ============================================ -->
-<section class="slide" id="slide-11b" aria-label="Slide 11b">
-  <div class="orb orb-1" style="background:#d4a574; top:-10%; left:-10%; right:auto;"></div>
-  <div class="orb orb-3" style="background:#e8b4b8; bottom:5%; right:10%;"></div>
+<section class="slide bg-abstract" id="slide-11b" aria-label="Slide 11b">
+  <div class="orb orb-1" style="background:#f4c430; top:-10%; left:-10%; right:auto;"></div>
+  <div class="orb orb-3" style="background:#e85c4a; bottom:5%; right:10%;"></div>
   <div class="slide-number">11b</div>
 
   <div class="s5-content" style="max-width:min(900px,92vw);">
@@ -1637,46 +1669,46 @@ body.editing [contenteditable]:focus {
 
     <!-- Pair 1 -->
     <div class="reveal" style="display:grid; grid-template-columns:1fr auto 1fr; gap:clamp(1rem,2vw,2rem); align-items:center; margin-bottom:clamp(1.25rem,2.5vh,2rem);">
-      <div style="border:1px solid rgba(212,165,116,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(212,165,116,0.05);">
-        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#d4a574; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">People Pleaser</div>
-        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(212,165,116,0.65); font-style:italic;" contenteditable="false">« Ne dérange pas. Sois gentil. »</div>
+      <div style="border:1px solid rgba(244,196,48,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(244,196,48,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#f4c430; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">People Pleaser</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(244,196,48,0.65); font-style:italic;" contenteditable="false">« Ne dérange pas. Sois gentil. »</div>
       </div>
       <div style="display:flex; flex-direction:column; align-items:center; gap:0.3rem;">
         <span style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.65rem,0.9vw,0.78rem); color:rgba(232,228,223,0.3); letter-spacing:0.2em;">VS</span>
       </div>
-      <div style="border:1px solid rgba(232,180,184,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(232,180,184,0.05);">
-        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#e8b4b8; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Rebelle</div>
-        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(232,180,184,0.65); font-style:italic;" contenteditable="false">« Dis non ! Envoie tout valser ! »</div>
+      <div style="border:1px solid rgba(244,116,59,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(244,116,59,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#f4743b; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Rebelle</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(244,116,59,0.65); font-style:italic;" contenteditable="false">« Dis non ! Envoie tout valser ! »</div>
       </div>
     </div>
 
     <!-- Pair 2 -->
     <div class="reveal" style="display:grid; grid-template-columns:1fr auto 1fr; gap:clamp(1rem,2vw,2rem); align-items:center; margin-bottom:clamp(1.25rem,2.5vh,2rem);">
-      <div style="border:1px solid rgba(212,165,116,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(212,165,116,0.05);">
-        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#d4a574; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Perfectionniste</div>
-        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(212,165,116,0.65); font-style:italic;" contenteditable="false">« C'est pas pret. Retravaille. »</div>
+      <div style="border:1px solid rgba(244,196,48,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(244,196,48,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#f4c430; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Perfectionniste</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(244,196,48,0.65); font-style:italic;" contenteditable="false">« C'est pas pret. Retravaille. »</div>
       </div>
       <div style="display:flex; flex-direction:column; align-items:center; gap:0.3rem;">
         <span style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.65rem,0.9vw,0.78rem); color:rgba(232,228,223,0.3); letter-spacing:0.2em;">VS</span>
       </div>
-      <div style="border:1px solid rgba(232,180,184,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(232,180,184,0.05);">
-        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#e8b4b8; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Créatif sauvage</div>
-        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(232,180,184,0.65); font-style:italic;" contenteditable="false">« Lance-toi maintenant ! »</div>
+      <div style="border:1px solid rgba(244,116,59,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(244,116,59,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#f4743b; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Créatif sauvage</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(244,116,59,0.65); font-style:italic;" contenteditable="false">« Lance-toi maintenant ! »</div>
       </div>
     </div>
 
     <!-- Pair 3 -->
     <div class="reveal" style="display:grid; grid-template-columns:1fr auto 1fr; gap:clamp(1rem,2vw,2rem); align-items:center; margin-bottom:clamp(1rem,2vh,1.5rem);">
-      <div style="border:1px solid rgba(212,165,116,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(212,165,116,0.05);">
-        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#d4a574; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Pusher</div>
-        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(212,165,116,0.65); font-style:italic;" contenteditable="false">« Travaille plus. Dors moins. »</div>
+      <div style="border:1px solid rgba(244,196,48,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(244,196,48,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#f4c430; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Pusher</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(244,196,48,0.65); font-style:italic;" contenteditable="false">« Travaille plus. Dors moins. »</div>
       </div>
       <div style="display:flex; flex-direction:column; align-items:center; gap:0.3rem;">
         <span style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.65rem,0.9vw,0.78rem); color:rgba(232,228,223,0.3); letter-spacing:0.2em;">VS</span>
       </div>
-      <div style="border:1px solid rgba(232,180,184,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(232,180,184,0.05);">
-        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#e8b4b8; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Épuisé</div>
-        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(232,180,184,0.65); font-style:italic;" contenteditable="false">« Laisse-moi souffler... »</div>
+      <div style="border:1px solid rgba(244,116,59,0.3); border-radius:6px; padding:clamp(0.8rem,1.5vw,1.25rem); background:rgba(244,116,59,0.05);">
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:clamp(0.85rem,1.2vw,1rem); color:#f4743b; font-weight:400; margin-bottom:0.4rem;" contenteditable="false">Épuisé</div>
+        <div style="font-family:'Cormorant',serif; font-size:clamp(1rem,1.6vw,1.3rem); color:rgba(244,116,59,0.65); font-style:italic;" contenteditable="false">« Laisse-moi souffler... »</div>
       </div>
     </div>
 
@@ -1693,9 +1725,9 @@ body.editing [contenteditable]:focus {
      SLIDE 11d — LA CLÉ DE DEMARTINI : ÉCOUTER LES DEUX
      ============================================ -->
 <section class="slide" id="slide-11d" aria-label="Slide 11d">
-  <div class="orb orb-1" style="background:#e8b4b8; top:-15%; right:5%; opacity:0.15;"></div>
-  <div class="orb orb-2" style="background:#d4a574; bottom:-10%; left:-5%; opacity:0.12;"></div>
-  <div class="orb orb-3" style="background:#c9b896; top:35%; left:25%;"></div>
+  <div class="orb orb-1" style="background:#e85c4a; top:-15%; right:5%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#f4c430; bottom:-10%; left:-5%; opacity:0.12;"></div>
+  <div class="orb orb-3" style="background:#6aad5a; top:35%; left:25%;"></div>
   <div class="slide-number">11d</div>
 
   <div class="s2-content">
@@ -1708,7 +1740,7 @@ body.editing [contenteditable]:focus {
       Combattre la voix dominante ne marche pas — elle se renforce. Ignorer la voix refoulée ne marche pas — elle revient en sabotage. La seule issue : <strong style="color:#e8e4df;font-weight:400;">écouter les deux</strong>. Reconnaître que chacune essaie de te protéger, a sa manière. Quand les deux sont entendues, la guerre s'arrete. L'énergie se libère. Et tu retrouves la capacité de décider.
     </p>
     <div class="rule reveal"></div>
-    <p class="s2-note reveal" contenteditable="false" style="font-size:clamp(0.82rem,1.2vw,1rem); margin-top:clamp(0.5rem,1vh,1rem); color:rgba(212,165,116,0.6);">
+    <p class="s2-note reveal" contenteditable="false" style="font-size:clamp(0.82rem,1.2vw,1rem); margin-top:clamp(0.5rem,1vh,1rem); color:rgba(244,196,48,0.6);">
       C'est exactement ce que fait la syntonisation « Traverser le Blocage » : elle donne la parole aux deux voix, dans un espace sur.
     </p>
   </div>
@@ -1718,8 +1750,8 @@ body.editing [contenteditable]:focus {
      SLIDE 11c — UNE SEULE CASCADE, TROIS SYSTÈMES
      ============================================ -->
 <section class="slide" id="slide-11c" aria-label="Synthèse cascade">
-  <div class="orb orb-1" style="background:#d4a574; top:-15%; right:-10%;"></div>
-  <div class="orb orb-2" style="background:#c9b896; bottom:-5%; left:-5%; opacity:0.14;"></div>
+  <div class="orb orb-1" style="background:#f4c430; top:-15%; right:-10%;"></div>
+  <div class="orb orb-2" style="background:#6aad5a; bottom:-5%; left:-5%; opacity:0.14;"></div>
   <div class="accent-line"></div>
   <div class="slide-number">11c</div>
 
@@ -1732,23 +1764,23 @@ body.editing [contenteditable]:focus {
       </p>
     </div>
     <div class="cards-grid">
-      <div class="card reveal" style="border-color: rgba(212,165,116,0.35);">
-        <span class="card-icon" contenteditable="false" style="color:#d4a574;">Cognitif</span>
+      <div class="card reveal" style="border-color: rgba(244,196,48,0.35);">
+        <span class="card-icon" contenteditable="false" style="color:#f4c430;">Cognitif</span>
         <div class="card-title" contenteditable="false">Le cerveau se déconnecte</div>
         <p class="card-body" contenteditable="false">L'amygdale inhibe le cortex préfrontal. Tu ne peux plus raisonner, décider, trouver tes mots. Le gardien a coupé l'escalier.</p>
-        <p class="card-examples" contenteditable="false" style="color:rgba(212,165,116,0.5);">Van der Kolk · Porges</p>
+        <p class="card-examples" contenteditable="false" style="color:rgba(244,196,48,0.5);">Van der Kolk · Porges</p>
       </div>
-      <div class="card reveal" style="border-color: rgba(201,184,150,0.35);">
-        <span class="card-icon" contenteditable="false" style="color:#c9b896;">Somatique</span>
+      <div class="card reveal" style="border-color: rgba(106,173,90,0.35);">
+        <span class="card-icon" contenteditable="false" style="color:#6aad5a;">Somatique</span>
         <div class="card-title" contenteditable="false">Le corps se contracte</div>
         <p class="card-body" contenteditable="false">Cortisol et adrénaline inondent le corps. Les muscles se contractent, les fascias se resserrent. Si tu ne peux pas fuir, l'énergie reste piégée. Le ressort.</p>
-        <p class="card-examples" contenteditable="false" style="color:rgba(201,184,150,0.5);">Peter Levine</p>
+        <p class="card-examples" contenteditable="false" style="color:rgba(106,173,90,0.5);">Peter Levine</p>
       </div>
-      <div class="card reveal" style="border-color: rgba(232,180,184,0.35);">
-        <span class="card-icon" contenteditable="false" style="color:#e8b4b8;">Psychologique</span>
+      <div class="card reveal" style="border-color: rgba(232,92,74,0.35);">
+        <span class="card-icon" contenteditable="false" style="color:#e85c4a;">Psychologique</span>
         <div class="card-title" contenteditable="false">Les voix s'activent</div>
         <p class="card-body" contenteditable="false">Des circuits neuronaux appris se déclenchent : les parts protectrices. Elles s'activent en paires opposées — comme deux muscles qui se contractent l'un contre l'autre. La guerre.</p>
-        <p class="card-examples" contenteditable="false" style="color:rgba(232,180,184,0.5);">Schwartz · Demartini</p>
+        <p class="card-examples" contenteditable="false" style="color:rgba(232,92,74,0.5);">Schwartz · Demartini</p>
       </div>
     </div>
     <p class="s3-body reveal" style="text-align:center; margin-top:clamp(0.75rem,1.5vh,1.25rem);" contenteditable="false">
@@ -1760,9 +1792,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 12 — LA BOUCLE COMPLÈTE (triangle 3 systèmes)
      ============================================ -->
-<section class="slide" id="slide-12" aria-label="Slide 12">
-  <div class="orb orb-1" style="background:#c9b896; top:-10%; right:-10%; opacity:0.15;"></div>
-  <div class="orb orb-2" style="background:#e8b4b8; bottom:-10%; left:-5%; opacity:0.14;"></div>
+<section class="slide bg-mountain" id="slide-12" aria-label="Slide 12">
+  <div class="orb orb-1" style="background:#6aad5a; top:-10%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#e85c4a; bottom:-10%; left:-5%; opacity:0.14;"></div>
   <div class="slide-number">12</div>
 
   <div class="centered-content">
@@ -1773,9 +1805,9 @@ body.editing [contenteditable]:focus {
     <div class="svg-illustration reveal" style="margin: clamp(0.5rem, 1vh, 1.5rem) auto;">
       <svg viewBox="0 0 600 480" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;">
         <defs>
-          <marker id="aGold" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto"><path d="M0 0 L12 5 L0 10" fill="#d4a574"/></marker>
-          <marker id="aSage" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto"><path d="M0 0 L12 5 L0 10" fill="#c9b896"/></marker>
-          <marker id="aPink" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto"><path d="M0 0 L12 5 L0 10" fill="#e8b4b8"/></marker>
+          <marker id="aGold" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto"><path d="M0 0 L12 5 L0 10" fill="#f4c430"/></marker>
+          <marker id="aSage" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto"><path d="M0 0 L12 5 L0 10" fill="#6aad5a"/></marker>
+          <marker id="aPink" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto"><path d="M0 0 L12 5 L0 10" fill="#e85c4a"/></marker>
           <marker id="aWhite" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto"><path d="M0 0 L12 5 L0 10" fill="rgba(232,228,223,0.4)"/></marker>
         </defs>
 
@@ -1786,37 +1818,37 @@ body.editing [contenteditable]:focus {
         <line x1="300" y1="48" x2="300" y2="78" stroke="rgba(232,228,223,0.25)" stroke-width="2" marker-end="url(#aWhite)"/>
 
         <!-- COGNITIF (top of triangle) -->
-        <rect x="170" y="80" width="260" height="75" rx="8" fill="rgba(212,165,116,0.06)" stroke="rgba(212,165,116,0.5)" stroke-width="2"/>
-        <text x="300" y="105" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="rgba(212,165,116,0.6)" letter-spacing="0.2em">COGNITIF</text>
-        <text x="300" y="128" text-anchor="middle" font-family="IBM Plex Sans" font-size="17" font-weight="400" fill="#d4a574" contenteditable="false">Le cortex se déconnecte</text>
-        <text x="300" y="148" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(212,165,116,0.5)" contenteditable="false">tu ne peux plus décider ni raisonner</text>
+        <rect x="170" y="80" width="260" height="75" rx="8" fill="rgba(244,196,48,0.06)" stroke="rgba(244,196,48,0.5)" stroke-width="2"/>
+        <text x="300" y="105" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="rgba(244,196,48,0.6)" letter-spacing="0.2em">COGNITIF</text>
+        <text x="300" y="128" text-anchor="middle" font-family="IBM Plex Sans" font-size="17" font-weight="400" fill="#f4c430" contenteditable="false">Le cortex se déconnecte</text>
+        <text x="300" y="148" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(244,196,48,0.5)" contenteditable="false">tu ne peux plus décider ni raisonner</text>
 
         <!-- SOMATIQUE (bottom left) -->
-        <rect x="0" y="330" width="230" height="75" rx="8" fill="rgba(201,184,150,0.06)" stroke="rgba(201,184,150,0.5)" stroke-width="2"/>
-        <text x="115" y="355" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="rgba(201,184,150,0.6)" letter-spacing="0.2em">SOMATIQUE</text>
-        <text x="115" y="378" text-anchor="middle" font-family="IBM Plex Sans" font-size="17" font-weight="400" fill="#c9b896" contenteditable="false">Le corps se contracte</text>
-        <text x="115" y="398" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(201,184,150,0.5)" contenteditable="false">énergie piégée, noeud, tension</text>
+        <rect x="0" y="330" width="230" height="75" rx="8" fill="rgba(106,173,90,0.06)" stroke="rgba(106,173,90,0.5)" stroke-width="2"/>
+        <text x="115" y="355" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="rgba(106,173,90,0.6)" letter-spacing="0.2em">SOMATIQUE</text>
+        <text x="115" y="378" text-anchor="middle" font-family="IBM Plex Sans" font-size="17" font-weight="400" fill="#6aad5a" contenteditable="false">Le corps se contracte</text>
+        <text x="115" y="398" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(106,173,90,0.5)" contenteditable="false">énergie piégée, noeud, tension</text>
 
         <!-- PSYCHOLOGIQUE (bottom right) -->
-        <rect x="370" y="330" width="230" height="75" rx="8" fill="rgba(232,180,184,0.06)" stroke="rgba(232,180,184,0.5)" stroke-width="2"/>
-        <text x="485" y="355" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="rgba(232,180,184,0.6)" letter-spacing="0.2em">PSYCHOLOGIQUE</text>
-        <text x="485" y="378" text-anchor="middle" font-family="IBM Plex Sans" font-size="17" font-weight="400" fill="#e8b4b8" contenteditable="false">Les voix s'activent</text>
-        <text x="485" y="398" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(232,180,184,0.5)" contenteditable="false">paires opposées en guerre</text>
+        <rect x="370" y="330" width="230" height="75" rx="8" fill="rgba(232,92,74,0.06)" stroke="rgba(232,92,74,0.5)" stroke-width="2"/>
+        <text x="485" y="355" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="rgba(232,92,74,0.6)" letter-spacing="0.2em">PSYCHOLOGIQUE</text>
+        <text x="485" y="378" text-anchor="middle" font-family="IBM Plex Sans" font-size="17" font-weight="400" fill="#e85c4a" contenteditable="false">Les voix s'activent</text>
+        <text x="485" y="398" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(232,92,74,0.5)" contenteditable="false">paires opposées en guerre</text>
 
         <!-- ARROWS: Cognitif → Somatique (left side down) -->
-        <path d="M200 155 L125 330" stroke="#d4a574" stroke-width="2.5" marker-end="url(#aSage)"/>
+        <path d="M200 155 L125 330" stroke="#f4c430" stroke-width="2.5" marker-end="url(#aSage)"/>
         <!-- ARROWS: Somatique → Cognitif (left side up) -->
-        <path d="M145 328 L215 158" stroke="#c9b896" stroke-width="2.5" marker-end="url(#aGold)"/>
+        <path d="M145 328 L215 158" stroke="#6aad5a" stroke-width="2.5" marker-end="url(#aGold)"/>
 
         <!-- ARROWS: Cognitif → Psychologique (right side down) -->
-        <path d="M400 155 L475 330" stroke="#d4a574" stroke-width="2.5" marker-end="url(#aPink)"/>
+        <path d="M400 155 L475 330" stroke="#f4c430" stroke-width="2.5" marker-end="url(#aPink)"/>
         <!-- ARROWS: Psychologique → Cognitif (right side up) -->
-        <path d="M455 328 L385 158" stroke="#e8b4b8" stroke-width="2.5" marker-end="url(#aGold)"/>
+        <path d="M455 328 L385 158" stroke="#e85c4a" stroke-width="2.5" marker-end="url(#aGold)"/>
 
         <!-- ARROWS: Somatique → Psychologique (bottom, right) -->
-        <line x1="230" y1="358" x2="370" y2="358" stroke="#c9b896" stroke-width="2.5" marker-end="url(#aPink)"/>
+        <line x1="230" y1="358" x2="370" y2="358" stroke="#6aad5a" stroke-width="2.5" marker-end="url(#aPink)"/>
         <!-- ARROWS: Psychologique → Somatique (bottom, left) -->
-        <line x1="370" y1="378" x2="230" y2="378" stroke="#e8b4b8" stroke-width="2.5" marker-end="url(#aSage)"/>
+        <line x1="370" y1="378" x2="230" y2="378" stroke="#e85c4a" stroke-width="2.5" marker-end="url(#aSage)"/>
 
         <!-- Labels on arrows — white, readable -->
         <!-- Left side -->
@@ -1848,9 +1880,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 13 — LES TROIS IMPASSES (comportements erronés)
      ============================================ -->
-<section class="slide" id="slide-13" aria-label="Slide 13 sur 23">
-  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-10%; opacity:0.15;"></div>
-  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:10%;"></div>
+<section class="slide bg-fire" id="slide-13" aria-label="Slide 13 sur 23">
+  <div class="orb orb-1" style="background:#e85c4a; top:-20%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#f4c430; bottom:-15%; left:10%;"></div>
   <div class="slide-number">13 / 23</div>
 
   <div class="s4-content">
@@ -1860,31 +1892,31 @@ body.editing [contenteditable]:focus {
     </div>
     <div class="cards-grid">
       <!-- Impasse 1: Penser -->
-      <div class="card reveal" style="border-color: rgba(212,165,116,0.3);">
+      <div class="card reveal" style="border-color: rgba(244,196,48,0.3);">
         <span class="card-icon" contenteditable="false">I.</span>
         <div class="card-title" contenteditable="false">Penser sa sortie</div>
         <p class="card-body" contenteditable="false">
           Refaire un plan d'action. Relire une formation. Écouter un podcast de plus. Réfléchir encore a sa stratégie.
         </p>
-        <p class="card-examples" contenteditable="false" style="color:rgba(232,180,184,0.6);">Pourquoi ça échoue : le cortex est déconnecté. Tu essaies de démarrer une voiture avec la batterie à plat.</p>
+        <p class="card-examples" contenteditable="false" style="color:#f4743b; font-size:clamp(0.7rem, 1vw, 0.85rem); opacity:0.9;">Pourquoi ça échoue : le cortex est déconnecté. Tu essaies de démarrer une voiture avec la batterie à plat.</p>
       </div>
       <!-- Impasse 2: Forcer -->
-      <div class="card reveal" style="border-color: rgba(212,165,116,0.3);">
+      <div class="card reveal" style="border-color: rgba(244,196,48,0.3);">
         <span class="card-icon" contenteditable="false">II.</span>
         <div class="card-title" contenteditable="false">Forcer le passage</div>
         <p class="card-body" contenteditable="false">
           Se forcer à publier. S'obliger à appeler. Se dire « cette fois, j'y vais ». Culpabiliser pour se motiver.
         </p>
-        <p class="card-examples" contenteditable="false" style="color:rgba(232,180,184,0.6);">Pourquoi ça échoue : plus tu pousses, plus le gardien verrouille. La résistance se renforce.</p>
+        <p class="card-examples" contenteditable="false" style="color:#f4743b; font-size:clamp(0.7rem, 1vw, 0.85rem); opacity:0.9;">Pourquoi ça échoue : plus tu pousses, plus le gardien verrouille. La résistance se renforce.</p>
       </div>
       <!-- Impasse 3: Ignorer -->
-      <div class="card reveal" style="border-color: rgba(212,165,116,0.3);">
+      <div class="card reveal" style="border-color: rgba(244,196,48,0.3);">
         <span class="card-icon" contenteditable="false">III.</span>
         <div class="card-title" contenteditable="false">Ignorer et contourner</div>
         <p class="card-body" contenteditable="false">
           Passer à autre chose. S'occuper de tâches secondaires. Réorganiser son bureau. « Je m'en occuperai demain. »
         </p>
-        <p class="card-examples" contenteditable="false" style="color:rgba(232,180,184,0.6);">Pourquoi ça échoue : l'énergie piégée ne part pas. Le rocher grossit. Il reviendra au pire moment.</p>
+        <p class="card-examples" contenteditable="false" style="color:#f4743b; font-size:clamp(0.7rem, 1vw, 0.85rem); opacity:0.9;">Pourquoi ça échoue : l'énergie piégée ne part pas. Le rocher grossit. Il reviendra au pire moment.</p>
       </div>
     </div>
   </div>
@@ -1893,10 +1925,10 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 13b — LA SORTIE : TRAVERSER
      ============================================ -->
-<section class="slide" id="slide-13b" aria-label="Slide 13b sur 23">
-  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-10%; opacity:0.15;"></div>
-  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:-5%; opacity:0.13;"></div>
-  <div class="orb orb-3" style="background:#c9b896; top:35%; left:25%;"></div>
+<section class="slide bg-path" id="slide-13b" aria-label="Slide 13b sur 23">
+  <div class="orb orb-1" style="background:#e85c4a; top:-20%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#f4c430; bottom:-15%; left:-5%; opacity:0.13;"></div>
+  <div class="orb orb-3" style="background:#6aad5a; top:35%; left:25%;"></div>
   <div class="slide-number">13b / 23</div>
 
   <div class="s2-content">
@@ -1914,9 +1946,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 14 — CE QUE FONT LES SYNTONISATIONS
      ============================================ -->
-<section class="slide" id="slide-14" aria-label="Slide 14 sur 20">
-  <div class="orb orb-1" style="background:#d4a574; top:-10%; right:-5%;"></div>
-  <div class="orb orb-3" style="background:#c9b896; bottom:20%; left:5%; opacity:0.14;"></div>
+<section class="slide bg-forest" id="slide-14" aria-label="Slide 14 sur 20">
+  <div class="orb orb-1" style="background:#f4c430; top:-10%; right:-5%;"></div>
+  <div class="orb orb-3" style="background:#6aad5a; bottom:20%; left:5%; opacity:0.14;"></div>
   <div class="slide-number">14 / 20</div>
 
   <div class="s3-content">
@@ -1927,36 +1959,36 @@ body.editing [contenteditable]:focus {
         <div class="rule-left reveal"></div>
         <!-- SVG: House with reopening arrows -->
         <div class="svg-illustration reveal">
-          <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Roof -->
-            <path d="M110 20 L30 80 L190 80 Z" stroke="#d4a574" stroke-width="1.5" fill="rgba(232,228,223,0.04)"/>
+            <path d="M110 20 L30 80 L190 80 Z" stroke="#f4c430" stroke-width="1.5" fill="rgba(232,228,223,0.04)"/>
             <!-- Top floor (Stratège) — reconnecting -->
-            <rect x="40" y="80" width="140" height="55" stroke="#d4a574" stroke-width="1.2" fill="rgba(212,165,116,0.06)"/>
-            <text x="110" y="105" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="#d4a574" letter-spacing="0.1em">STRATÈGE</text>
-            <text x="110" y="118" text-anchor="middle" font-family="IBM Plex Sans" font-size="7" fill="rgba(212,165,116,0.6)">nouveaux circuits</text>
+            <rect x="40" y="80" width="140" height="55" stroke="#f4c430" stroke-width="1.2" fill="rgba(244,196,48,0.06)"/>
+            <text x="110" y="103" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="400" fill="#f4c430" letter-spacing="0.1em">STRATÈGE</text>
+            <text x="110" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(244,196,48,0.8)">nouveaux circuits</text>
             <!-- Middle floor (Radar) — calmed -->
-            <rect x="40" y="135" width="140" height="55" stroke="#e8b4b8" stroke-width="1.2" fill="rgba(232,180,184,0.04)"/>
-            <text x="110" y="160" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="#e8b4b8" letter-spacing="0.1em">RADAR</text>
-            <text x="110" y="173" text-anchor="middle" font-family="IBM Plex Sans" font-size="7" fill="rgba(232,180,184,0.6)">signaux apaisés</text>
+            <rect x="40" y="135" width="140" height="55" stroke="#e85c4a" stroke-width="1.2" fill="rgba(232,92,74,0.04)"/>
+            <text x="110" y="158" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="400" fill="#e85c4a" letter-spacing="0.1em">RADAR</text>
+            <text x="110" y="175" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(232,92,74,0.8)">signaux apaisés</text>
             <!-- Ground floor (Gardien) — calm -->
-            <rect x="40" y="190" width="140" height="55" stroke="#c9b896" stroke-width="1.2" fill="rgba(201,184,150,0.06)"/>
-            <text x="110" y="215" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="#c9b896" letter-spacing="0.1em">GARDIEN</text>
-            <text x="110" y="228" text-anchor="middle" font-family="IBM Plex Sans" font-size="7" fill="rgba(201,184,150,0.6)">en sécurité</text>
+            <rect x="40" y="190" width="140" height="55" stroke="#6aad5a" stroke-width="1.2" fill="rgba(106,173,90,0.06)"/>
+            <text x="110" y="213" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="400" fill="#6aad5a" letter-spacing="0.1em">GARDIEN</text>
+            <text x="110" y="230" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(106,173,90,0.8)">en sécurité</text>
             <!-- Reopening arrows (upward flow) -->
-            <path d="M185 230 C200 210 200 180 185 165" stroke="#c9b896" stroke-width="1.2" fill="none" marker-end="url(#arrowUp1)"/>
-            <path d="M185 165 C200 145 200 115 185 100" stroke="#e8b4b8" stroke-width="1.2" fill="none" marker-end="url(#arrowUp2)"/>
+            <path d="M195 230 C215 210 215 180 195 165" stroke="#6aad5a" stroke-width="1.5" fill="none" marker-end="url(#arrowUp1)"/>
+            <path d="M195 165 C215 145 215 115 195 100" stroke="#e85c4a" stroke-width="1.5" fill="none" marker-end="url(#arrowUp2)"/>
             <defs>
-              <marker id="arrowUp1" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0 0 L6 2.5 L0 5" fill="#c9b896"/></marker>
-              <marker id="arrowUp2" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0 0 L6 2.5 L0 5" fill="#e8b4b8"/></marker>
+              <marker id="arrowUp1" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0 0 L6 2.5 L0 5" fill="#6aad5a"/></marker>
+              <marker id="arrowUp2" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0 0 L6 2.5 L0 5" fill="#e85c4a"/></marker>
             </defs>
             <!-- Staircase — restored -->
-            <line x1="70" y1="245" x2="70" y2="80" stroke="rgba(212,165,116,0.3)" stroke-width="1.5"/>
+            <line x1="70" y1="245" x2="70" y2="80" stroke="rgba(244,196,48,0.3)" stroke-width="1.5"/>
             <!-- Foundation -->
-            <line x1="30" y1="245" x2="190" y2="245" stroke="#d4a574" stroke-width="1.5"/>
-            <!-- Step labels -->
-            <text x="205" y="228" font-family="IBM Plex Sans" font-size="7" fill="rgba(201,184,150,0.5)">étape 1</text>
-            <text x="205" y="163" font-family="IBM Plex Sans" font-size="7" fill="rgba(232,180,184,0.5)">étape 2</text>
-            <text x="205" y="100" font-family="IBM Plex Sans" font-size="7" fill="rgba(212,165,116,0.5)">étape 3</text>
+            <line x1="30" y1="245" x2="190" y2="245" stroke="#f4c430" stroke-width="1.5"/>
+            <!-- Step labels — moved inside viewBox -->
+            <text x="225" y="225" font-family="IBM Plex Sans" font-size="12" fill="#6aad5a" opacity="0.8">étape 1</text>
+            <text x="225" y="160" font-family="IBM Plex Sans" font-size="12" fill="#e85c4a" opacity="0.8">étape 2</text>
+            <text x="225" y="100" font-family="IBM Plex Sans" font-size="12" fill="#f4c430" opacity="0.8">étape 3</text>
           </svg>
         </div>
       </div>
@@ -1993,9 +2025,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 16 — LE PROBLÈME QUE LES SYNTONISATIONS NE RÉSOLVENT PAS
      ============================================ -->
-<section class="slide" id="slide-16" aria-label="Slide 16 sur 20">
-  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-10%; opacity:0.15;"></div>
-  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:-5%; opacity:0.13;"></div>
+<section class="slide bg-mountain" id="slide-16" aria-label="Slide 16 sur 20">
+  <div class="orb orb-1" style="background:#e85c4a; top:-20%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#f4c430; bottom:-15%; left:-5%; opacity:0.13;"></div>
   <div class="slide-number">16 / 20</div>
 
   <div class="centered-content">
@@ -2013,30 +2045,30 @@ body.editing [contenteditable]:focus {
         <path d="M410 205 L540 205" stroke="rgba(232,228,223,0.1)" stroke-width="1" stroke-dasharray="10 8"/>
 
         <!-- LEFT: Ton élan (arrow blocked) -->
-        <line x1="20" y1="185" x2="165" y2="185" stroke="#d4a574" stroke-width="2.5"/>
-        <path d="M158 177 L172 185 L158 193" stroke="#d4a574" stroke-width="2.5" fill="none"/>
-        <text x="90" y="170" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" font-weight="400" fill="#d4a574" letter-spacing="0.08em">TON ÉLAN</text>
+        <line x1="20" y1="185" x2="165" y2="185" stroke="#f4c430" stroke-width="2.5"/>
+        <path d="M158 177 L172 185 L158 193" stroke="#f4c430" stroke-width="2.5" fill="none"/>
+        <text x="90" y="170" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" font-weight="400" fill="#f4c430" letter-spacing="0.08em">TON ÉLAN</text>
 
         <!-- BLOCKED X -->
         <line x1="175" y1="165" x2="195" y2="185" stroke="rgba(232,228,223,0.35)" stroke-width="2"/>
         <line x1="195" y1="165" x2="175" y2="185" stroke="rgba(232,228,223,0.35)" stroke-width="2"/>
 
         <!-- BOULDER — very big and prominent -->
-        <ellipse cx="285" cy="150" rx="85" ry="68" stroke="#e8b4b8" stroke-width="2.5" fill="rgba(232,180,184,0.06)"/>
-        <ellipse cx="285" cy="140" rx="62" ry="45" stroke="rgba(232,180,184,0.2)" stroke-width="1" fill="none"/>
+        <ellipse cx="285" cy="150" rx="85" ry="68" stroke="#e85c4a" stroke-width="2.5" fill="rgba(232,92,74,0.06)"/>
+        <ellipse cx="285" cy="140" rx="62" ry="45" stroke="rgba(232,92,74,0.2)" stroke-width="1" fill="none"/>
         <!-- Texture lines -->
-        <path d="M240 130 Q270 115 310 133" stroke="rgba(232,180,184,0.12)" stroke-width="1" fill="none"/>
-        <path d="M250 155 Q285 142 320 158" stroke="rgba(232,180,184,0.1)" stroke-width="1" fill="none"/>
+        <path d="M240 130 Q270 115 310 133" stroke="rgba(232,92,74,0.12)" stroke-width="1" fill="none"/>
+        <path d="M250 155 Q285 142 320 158" stroke="rgba(232,92,74,0.1)" stroke-width="1" fill="none"/>
         <!-- Boulder labels -->
-        <text x="285" y="140" text-anchor="middle" font-family="Cormorant" font-size="24" fill="#e8b4b8" font-style="italic">le rocher</text>
-        <text x="285" y="165" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(232,180,184,0.65)">ce truc que tu repousses</text>
+        <text x="285" y="140" text-anchor="middle" font-family="Cormorant" font-size="24" fill="#e85c4a" font-style="italic">le rocher</text>
+        <text x="285" y="165" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="rgba(232,92,74,0.65)">ce truc que tu repousses</text>
 
         <!-- RIGHT: Ta nouvelle réalité (inaccessible) -->
-        <rect x="395" y="130" width="155" height="55" rx="6" fill="rgba(212,165,116,0.06)" stroke="rgba(212,165,116,0.25)" stroke-width="1" stroke-dasharray="6 4"/>
-        <text x="472" y="155" text-anchor="middle" font-family="Cormorant" font-size="18" fill="rgba(212,165,116,0.5)" font-style="italic">ta nouvelle réalité</text>
-        <text x="472" y="175" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(212,165,116,0.35)">plus de clients, plus de revenus</text>
+        <rect x="395" y="130" width="155" height="55" rx="6" fill="rgba(244,196,48,0.06)" stroke="rgba(244,196,48,0.25)" stroke-width="1" stroke-dasharray="6 4"/>
+        <text x="472" y="155" text-anchor="middle" font-family="Cormorant" font-size="18" fill="rgba(244,196,48,0.5)" font-style="italic">ta nouvelle réalité</text>
+        <text x="472" y="175" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="rgba(244,196,48,0.35)">plus de clients, plus de revenus</text>
         <!-- Faded arrow on the other side -->
-        <path d="M405 185 L530 185" stroke="rgba(212,165,116,0.15)" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <path d="M405 185 L530 185" stroke="rgba(244,196,48,0.15)" stroke-width="1.5" stroke-dasharray="6 4"/>
       </svg>
     </div>
     <p class="centered-body reveal" contenteditable="false">
@@ -2048,9 +2080,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 17 — TRAVERSER LE BLOCAGE : ENLEVER LE ROCHER
      ============================================ -->
-<section class="slide" id="slide-17" aria-label="Slide 17 sur 20">
-  <div class="orb orb-1" style="background:#d4a574; top:-10%; right:-5%;"></div>
-  <div class="orb orb-3" style="background:#c9b896; bottom:20%; left:5%; opacity:0.14;"></div>
+<section class="slide bg-path" id="slide-17" aria-label="Slide 17 sur 20">
+  <div class="orb orb-1" style="background:#f4c430; top:-10%; right:-5%;"></div>
+  <div class="orb orb-3" style="background:#6aad5a; bottom:20%; left:5%; opacity:0.14;"></div>
   <div class="accent-line"></div>
   <div class="slide-number">17 / 20</div>
 
@@ -2066,16 +2098,16 @@ body.editing [contenteditable]:focus {
         <!-- Center line — clear -->
         <path d="M10 50 L290 50" stroke="rgba(232,228,223,0.1)" stroke-width="0.5" stroke-dasharray="8 6"/>
         <!-- Arrow flowing through -->
-        <line x1="30" y1="42" x2="260" y2="42" stroke="#d4a574" stroke-width="1.2"/>
-        <path d="M255 37 L268 42 L255 47" stroke="#d4a574" stroke-width="1.2" fill="none"/>
+        <line x1="30" y1="42" x2="260" y2="42" stroke="#f4c430" stroke-width="1.2"/>
+        <path d="M255 37 L268 42 L255 47" stroke="#f4c430" stroke-width="1.2" fill="none"/>
         <!-- Small dust particles where boulder was -->
-        <circle cx="150" cy="50" r="1.5" fill="rgba(232,180,184,0.2)"/>
-        <circle cx="155" cy="53" r="1" fill="rgba(232,180,184,0.15)"/>
-        <circle cx="145" cy="52" r="1" fill="rgba(232,180,184,0.15)"/>
+        <circle cx="150" cy="50" r="1.5" fill="rgba(232,92,74,0.2)"/>
+        <circle cx="155" cy="53" r="1" fill="rgba(232,92,74,0.15)"/>
+        <circle cx="145" cy="52" r="1" fill="rgba(232,92,74,0.15)"/>
         <!-- Light rays -->
-        <line x1="150" y1="20" x2="150" y2="30" stroke="rgba(212,165,116,0.15)" stroke-width="0.5"/>
-        <line x1="140" y1="22" x2="143" y2="31" stroke="rgba(212,165,116,0.1)" stroke-width="0.5"/>
-        <line x1="160" y1="22" x2="157" y2="31" stroke="rgba(212,165,116,0.1)" stroke-width="0.5"/>
+        <line x1="150" y1="20" x2="150" y2="30" stroke="rgba(244,196,48,0.15)" stroke-width="0.5"/>
+        <line x1="140" y1="22" x2="143" y2="31" stroke="rgba(244,196,48,0.1)" stroke-width="0.5"/>
+        <line x1="160" y1="22" x2="157" y2="31" stroke="rgba(244,196,48,0.1)" stroke-width="0.5"/>
       </svg>
     </div>
     <ol class="steps">
@@ -2114,9 +2146,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 18 — LES SIGNAUX : QUAND L'UTILISER
      ============================================ -->
-<section class="slide" id="slide-18" aria-label="Slide 18 sur 23">
-  <div class="orb orb-1" style="background:#c9b896; top:-10%; right:-10%; opacity:0.15;"></div>
-  <div class="orb orb-2" style="background:#e8b4b8; bottom:-10%; left:-5%; opacity:0.14;"></div>
+<section class="slide bg-calm" id="slide-18" aria-label="Slide 18 sur 23">
+  <div class="orb orb-1" style="background:#6aad5a; top:-10%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#e85c4a; bottom:-10%; left:-5%; opacity:0.14;"></div>
   <div class="slide-number">18 / 23</div>
 
   <div class="s4-content">
@@ -2126,8 +2158,8 @@ body.editing [contenteditable]:focus {
     </div>
     <div class="cards-grid">
       <!-- Corps -->
-      <div class="card reveal" style="border-color: rgba(201,184,150,0.3);">
-        <span class="card-icon" contenteditable="false" style="color:#c9b896;">Corps</span>
+      <div class="card reveal" style="border-color: rgba(106,173,90,0.3);">
+        <span class="card-icon" contenteditable="false" style="color:#6aad5a;">Corps</span>
         <p class="card-body" contenteditable="false"><strong>Noeud dans le ventre</strong> quand tu penses a un truc précis</p>
         <div style="height:1px; background:rgba(232,228,223,0.06); margin:0.5rem 0;"></div>
         <p class="card-body" contenteditable="false"><strong>Gorge serrée</strong> avant de prendre la parole ou de te montrer</p>
@@ -2135,8 +2167,8 @@ body.editing [contenteditable]:focus {
         <p class="card-body" contenteditable="false"><strong>Fatigue soudaine</strong> au moment ou tu t'appretes a agir</p>
       </div>
       <!-- Tête -->
-      <div class="card reveal" style="border-color: rgba(212,165,116,0.3);">
-        <span class="card-icon" contenteditable="false" style="color:#d4a574;">Tete</span>
+      <div class="card reveal" style="border-color: rgba(244,196,48,0.3);">
+        <span class="card-icon" contenteditable="false" style="color:#f4c430;">Tete</span>
         <p class="card-body" contenteditable="false">Tu <strong>tournes en rond</strong> sur une décision depuis plus de 48h</p>
         <div style="height:1px; background:rgba(232,228,223,0.06); margin:0.5rem 0;"></div>
         <p class="card-body" contenteditable="false">Tu prépares, peaufines — mais tu <strong>ne lances pas</strong></p>
@@ -2144,8 +2176,8 @@ body.editing [contenteditable]:focus {
         <p class="card-body" contenteditable="false">Tu penses <strong>« je suis pas légitime »</strong> ou « c'est pas le bon moment »</p>
       </div>
       <!-- Émotions -->
-      <div class="card reveal" style="border-color: rgba(232,180,184,0.3);">
-        <span class="card-icon" contenteditable="false" style="color:#e8b4b8;">Émotions</span>
+      <div class="card reveal" style="border-color: rgba(232,92,74,0.3);">
+        <span class="card-icon" contenteditable="false" style="color:#e85c4a;">Émotions</span>
         <p class="card-body" contenteditable="false"><strong>Irritabilité disproportionnée</strong> face a un truc simple</p>
         <div style="height:1px; background:rgba(232,228,223,0.06); margin:0.5rem 0;"></div>
         <p class="card-body" contenteditable="false">Envie de <strong>tout lacher</strong> sans raison claire</p>
@@ -2160,8 +2192,8 @@ body.editing [contenteditable]:focus {
      SLIDE 18b — LE PROTOCOLE EN 4 ÉTAPES
      ============================================ -->
 <section class="slide" id="slide-18b" aria-label="Slide 18b sur 21">
-  <div class="orb orb-1" style="background:#d4a574; top:-15%; right:-10%;"></div>
-  <div class="orb orb-3" style="background:#c9b896; bottom:20%; left:5%; opacity:0.14;"></div>
+  <div class="orb orb-1" style="background:#f4c430; top:-15%; right:-10%;"></div>
+  <div class="orb orb-3" style="background:#6aad5a; bottom:20%; left:5%; opacity:0.14;"></div>
   <div class="accent-line"></div>
   <div class="slide-number">18b / 21</div>
 
@@ -2204,9 +2236,9 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 19 — TROIS PERMISSIONS
      ============================================ -->
-<section class="slide" id="slide-19" aria-label="Slide 19 sur 20">
-  <div class="orb orb-1" style="background:#d4a574; top:-10%; left:-10%; right:auto;"></div>
-  <div class="orb orb-3" style="background:#e8b4b8; bottom:5%; right:10%;"></div>
+<section class="slide bg-light" id="slide-19" aria-label="Slide 19 sur 20">
+  <div class="orb orb-1" style="background:#f4c430; top:-10%; left:-10%; right:auto;"></div>
+  <div class="orb orb-3" style="background:#e85c4a; bottom:5%; right:10%;"></div>
   <div class="slide-number">19 / 20</div>
 
   <div class="s4-content">
@@ -2237,10 +2269,10 @@ body.editing [contenteditable]:focus {
 <!-- ============================================
      SLIDE 20 — CONNECTE-TOI À TON ROCHER
      ============================================ -->
-<section class="slide" id="slide-20" aria-label="Slide 20 sur 20">
-  <div class="orb orb-1" style="background:#e8b4b8; top:-20%; right:-10%; opacity:0.15;"></div>
-  <div class="orb orb-2" style="background:#d4a574; bottom:-15%; left:-5%; opacity:0.13;"></div>
-  <div class="orb orb-3" style="background:#c9b896; top:35%; left:25%;"></div>
+<section class="slide bg-cosmos" id="slide-20" aria-label="Slide 20 sur 20">
+  <div class="orb orb-1" style="background:#e85c4a; top:-20%; right:-10%; opacity:0.15;"></div>
+  <div class="orb orb-2" style="background:#f4c430; bottom:-15%; left:-5%; opacity:0.13;"></div>
+  <div class="orb orb-3" style="background:#6aad5a; top:35%; left:25%;"></div>
   <div class="slide-number">20 / 20</div>
 
   <div class="s7-content">
